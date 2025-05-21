@@ -25,6 +25,16 @@ class UserSeeder extends Seeder
         Permission::create(['name' => 'edit siswa']);
         Permission::create(['name' => 'delete siswa']);
 
+        Permission::create(['name' => 'view guru']);
+        Permission::create(['name' => 'create guru']);
+        Permission::create(['name' => 'edit guru']);
+        Permission::create(['name' => 'delete guru']);
+
+        Permission::create(['name' => 'view tahunAjaran']);
+        Permission::create(['name' => 'create tahunAjaran']);
+        Permission::create(['name' => 'edit tahunAjaran']);
+        Permission::create(['name' => 'delete tahunAjaran']);
+
         Permission::create(['name' => 'view device']);
         Permission::create(['name' => 'create device']);
         Permission::create(['name' => 'edit device']);

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->string('nama');
-            $table->integer('no_telepon');
+            $table->string('telepon');
         });
     }
 

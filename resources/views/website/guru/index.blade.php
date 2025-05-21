@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Positions'])
+@extends('website.layouts.app', ['title' => 'Guru'])
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -10,12 +10,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Subkelas</h1>
+          <h1>Guru</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Subkelas</li>
+            <li class="breadcrumb-item active">Guru</li>
           </ol>
         </div>
       </div>
@@ -28,21 +28,20 @@
       <div class="row">
         <div class="col-12">
           <div class="card">
-            @can('create position')
+            @can('create guru')
               <div class="card-header">
-                <a href="{{ route('positions.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Create New</a>
+                <a href="{{ route('guru.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Create New</a>
               </div>
             @endcan
             <!-- /.card-header -->
-            <div class="card-body">
-              <table id="datatable" class="table table-bordered table-hover">
+            <div class="card-body" style="overflow-x:auto;">
+              <table id="datatable" class="table table-bordered table-hover w-100">
                 <thead>
                 <tr>
                   <th>No</th>
-                  <th>Subkelas</th>
-                  <th>Wali Subkelas</th>
-                  <th>No. HP Wali Subkelas</th>
-                  <th>Aksi</th>
+                  <th>Nama</th>
+                  <th>Nomor Telepon</th>
+                  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -74,16 +73,17 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('#datatable').DataTable({
-      responsive    : true,
-      processing    : true,
-      serverSide    : true,
-      ajax          : {
-        url     : '{!! route('positions.ajax.datatable') !!}',
+      responsive : true,
+      processing : true,
+      serverSide : true,
+      scrollX : true, // tambahkan ini agar datatable bisa scroll horizontal
+      ajax : {
+        url : '{!! route('guru.ajax.datatable') !!}',
       },
       columns       : [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-        {data: 'name', name: 'name', orderable: true, searchable: true},                    
-        {data: 'is_active', name: 'is_active', orderable: false, searchable: false},                    
+        {data: 'nama', name: 'nama', orderable: true, searchable: true},
+        {data: 'telepon', name: 'telepon', orderable: true, searchable: true},
         {data: 'action', name: 'action', orderable: false, searchable: false}
       ]
     });
@@ -102,10 +102,10 @@
       if (result.value) {
         $('#submit_'+id).submit();
         Swal.fire(
-        'Deleted!',
-        'Position data deleted',
-        'success'
-          )   
+          'Deleted!',
+          'Guru data deleted',
+          'success'
+        )   
       }
     })
   }

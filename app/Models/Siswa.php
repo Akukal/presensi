@@ -16,16 +16,10 @@ class Siswa extends Model
         'nis',
         'nama',
         'gender',
-        'tahun_id',
-        'kelas_id',
-        'guru_id',
         'code',
+        'kelas_id',
+        'telepon_wali',
     ];
-
-    public function tahunAjaran()
-    {
-        return $this->belongsTo(TahunAjaran::class);
-    }
 
     public function kelas()
     {

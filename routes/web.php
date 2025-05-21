@@ -1,17 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KelasController;
-use App\Http\Controllers\PositionController;
-use App\Http\Controllers\RfidController;
-use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\DeviceController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\GuruController;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PresenceController;
-use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RfidController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\TahunAjaranController;
+use App\Http\Controllers\UserController;
+use App\Models\TahunAjaran;
+use Illuminate\Support\Facades\Route;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -34,11 +38,17 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('kelas', KelasController::class)->except('show');
     Route::get('kelas/ajax/datatable', [KelasController::class, 'datatable'])->name('kelas.ajax.datatable');
 
+    Route::resource('tahunAjaran', TahunAjaranController::class)->except('show');
+    Route::get('tahunAjaran/ajax/datatable', [TahunAjaranController::class, 'datatable'])->name('tahunAjaran.ajax.datatable');
+
     Route::resource('rfids', RfidController::class)->only(['index', 'destroy']);
     Route::get('rfids/ajax/datatable', [RfidController::class, 'datatable'])->name('rfids.ajax.datatable');
     
     Route::resource('siswa', SiswaController::class);
-    Route::get('staff/ajax/datatable', [SiswaController::class, 'datatable'])->name('siswa.ajax.datatable');
+    Route::get('siswa/ajax/datatable', [SiswaController::class, 'datatable'])->name('siswa.ajax.datatable');
+    
+    Route::resource('guru', GuruController::class);
+    Route::get('guru/ajax/datatable', [GuruController::class, 'datatable'])->name('guru.ajax.datatable');
     
     Route::resource('devices', DeviceController::class)->except('show');
     Route::get('devices/ajax/datatable', [DeviceController::class, 'datatable'])->name('devices.ajax.datatable');

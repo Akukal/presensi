@@ -42,6 +42,7 @@
                   <th>No</th>
                   <th>Kelas</th>
                   <th>Wali Kelas</th>
+                  <th>Nomor Wali Kelas</th>
                   <th>Aksi</th>
                 </tr>
                 </thead>
@@ -83,7 +84,8 @@
       columns       : [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
         {data: 'nama', name: 'nama', orderable: true, searchable: true},                    
-        {data: 'wali_kelas', name: 'wali_kelas', orderable: true, searchable: true},                    
+        {data: 'guru_nama', name: 'guru_nama', orderable: true, searchable: true},
+        {data: 'guru_telepon', name: 'guru_telepon', orderable: true, searchable: true},
         {data: 'action', name: 'action', orderable: false, searchable: false}
       ]
     });

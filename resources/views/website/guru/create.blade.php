@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Add Position'])
+@extends('website.layouts.app', ['title' => 'Add Guru'])
 
 @section('content')
 <!-- Content Wrapper. Contains page content -->
@@ -8,12 +8,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Add Position</h1>
+          <h1>Add Siswa</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Add Position</li>
+            <li class="breadcrumb-item active">Add Guru</li>
           </ol>
         </div>
       </div>
@@ -29,32 +29,27 @@
           <!-- Horizontal Form -->
           <div class="card">
             <div class="card-header">
-              <a href="{{ route('positions.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
+              <a href="{{ route('guru.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form class="form-horizontal" method="POST" action="{{ route('positions.store') }}">
+            <form class="form-horizontal" method="POST" action="{{ route('guru.store') }}">
               @csrf
               <div class="card-body">
                 <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Name</label>
+                  <label class="col-sm-2 col-form-label">Nama</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" value="{{ old('name') }}">
-                    @error('name')
+                    <input type="text" class="form-control @error('nama') is-invalid @enderror" placeholder="Nama" name="nama" value="{{ old('nama') }}">
+                    @error('nama')
                       <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
-                  
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Status</label>
+                  <label class="col-sm-2 col-form-label">Nomor Telepon</label>
                   <div class="col-sm-10">
-                    <select name="is_active" class="form-control @error('is_active') is-invalid @enderror">
-                      <option value="">[ Pilih Status ]</option>
-                      <option value="1" @selected(old('is_active') == "1")>Aktif</option>
-                      <option value="0" @selected(old('is_active') == "0")>Non-Aktif</option>
-                    </select>
-                    @error('is_active')
+                    <input type="number" class="form-control @error('telepon') is-invalid @enderror" placeholder="Nomor Telepon" name="telepon" value="{{ old('telepon') }}">
+                    @error('telepon')
                       <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>

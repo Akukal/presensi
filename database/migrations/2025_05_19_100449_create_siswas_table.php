@@ -17,15 +17,12 @@ return new class extends Migration
             $table->softDeletes();
             $table->integer('nis');
             $table->string('nama');
-            $table->enum('gender', ['pria', 'wanita'])->default('pria');
+            $table->tinyInteger('gender');
             $table->string('code')->nullable();
-            $table->uuid('tahun_id');
             $table->uuid('kelas_id');
-            $table->uuid('guru_id');
+            $table->string('telepon_wali');
 
             $table->foreign('kelas_id')->references('id')->on('kelas')->onDelete('cascade');
-            $table->foreign('tahun_id')->references('id')->on('tahun_ajarans')->onDelete('cascade');
-            $table->foreign('guru_id')->references('id')->on('gurus')->onDelete('cascade');
         });
     }
 

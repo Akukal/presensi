@@ -43,15 +43,13 @@
                   <th>Nama</th>
                   <th>Jenis Kelamin</th>
                   <th>Kelas</th>
-                  <th>Tahun Ajaran</th>
-                  <th>RFID</th>
                   <th>Nomor Orang Tua</th>
                   <th>Nomor Wali Kelas</th>
+                  <th>RFID</th>
                   <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-              
                 </tbody>
               </table>
             </div>
@@ -89,13 +87,12 @@
       columns       : [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
         {data: 'nis', name: 'nis', orderable: true, searchable: true},
-        {data: 'name', name: 'name', orderable: true, searchable: true},                    
-        {data: 'gender', name: 'gender', orderable: true, searchable: true},                    
-        {data: 'kelas', name: 'kelas', orderable: true, searchable: true},                    
-        {data: 'tahun_ajaran', name: 'tahun_ajaran', orderable: true, searchable: true},                    
-        {data: 'code', name: 'code', orderable: true, searchable: true},                    
-        {data: 'nomor_orang_tua', name: 'nomor_orang_tua', orderable: true, searchable: true},    
-        {data: 'nomor_wali_kelas', name: 'nomor_wali_kelas', orderable: true, searchable: true},    
+        {data: 'nama', name: 'nama', orderable: true, searchable: true},
+        {data: 'gender', name: 'gender', orderable: true, searchable: true},
+        {data: 'kelas_id', name: 'kelas_id', orderable: true, searchable: true},
+        {data: 'telepon_wali', name: 'telepon_wali', orderable: true, searchable: true},
+        {data: 'guru_telepon', name: 'guru_telepon', orderable: true, searchable: true},
+        {data: 'code', name: 'code', orderable: true, searchable: true},
         {data: 'action', name: 'action', orderable: false, searchable: false}
       ]
     });

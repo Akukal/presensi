@@ -22,11 +22,12 @@ class SiswaRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'nis' => 'required',
             'nama' => 'required',
             'gender' => 'required',
-            'code' => 'required',
-            'kelas_id' => 'required',
-            'no_wali' => 'required|numeric',
+            'code' => 'nullable',
+            'kelas_id' => 'required|exists:kelas,id',
+            'telepon_wali' => 'required',
         ];
     }
 }

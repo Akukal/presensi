@@ -36,8 +36,8 @@
                 <div class="form-group row">
                   <label class="col-sm-2 col-form-label">Nama Kelas</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Nama Kelas" name="name" value="{{ old('kelas') }}">
-                    @error('name')
+                    <input type="text" class="form-control @error('nama') is-invalid @enderror" placeholder="Nama Kelas" name="nama" value="{{ old('nama') }}">
+                    @error('nama')
                     <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>
@@ -48,7 +48,9 @@
                     <select name="guru_id" class="form-control @error('guru_id') is-invalid @enderror">
                       <option value="">[ Pilih Guru ]</option>
                       @foreach($gurus as $guru)
-                      <option value="{{ $guru->id }}" @selected(old('guru_id')==$guru->id)>{{ $guru->nama }}</option>
+                      <option value="{{ $guru->id }}" {{ old('guru_id') == $guru->id ? 'selected' : '' }}>
+                        {{ $guru->nama }}
+                      </option>
                       @endforeach
                     </select>
                     @error('guru_id')

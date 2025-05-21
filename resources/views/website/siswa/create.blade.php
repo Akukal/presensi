@@ -68,44 +68,12 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Tempat Lahir</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control @error('tempat_lahir') is-invalid @enderror" placeholder="Tempat Lahir" name="tempat_lahir" value="{{ old('tempat_lahir') }}">
-                    @error('tempat_lahir')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
-                  <div class="col-sm-10">
-                    <input type="date" class="form-control @error('tanggal_lahir') is-invalid @enderror" placeholder="Tanggal Lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}">
-                    @error('tanggal_lahir')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Kelas</label>
-                  <div class="col-sm-10">
-                    <select name="code" class="form-control @error('code') is-invalid @enderror">
-                      <option value="">[ Pilih Kelas ]</option>
-                      @foreach($rfids as $rfid)
-                          <option value="{{ $rfid->code }}" @selected(old('code') == $rfid->code)>{{ $rfid->code }}</option>
-                      @endforeach
-                    </select>
-                    @error('code')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-sm-2 col-form-label">Kelas</label>
                   <div class="col-sm-10">
                     <select name="kelas_id" class="form-control @error('kelas_id') is-invalid @enderror">
                       <option value="">[ Select Kelas ]</option>
                       @foreach($kelas as $k)
-                        <option value="{{ $k->id }}" @selected(old('kelas_id') == $k->id)>{{ $k->name }}</option>
+                        <option value="{{ $k->id }}" @selected(old('kelas_id') == $k->id)>{{ $k->nama }}</option>
                       @endforeach
                     </select>
                     @error('kelas_id')
@@ -114,28 +82,10 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Address</label>
+                  <label class="col-sm-2 col-form-label">No. Telepon Wali Murid</label>
                   <div class="col-sm-10">
-                    <textarea name="address" rows="5" class="form-control @error('address') is-invalid @enderror">{{ old('address') }}</textarea>
-                    @error('address')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Phone Number</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control @error('phone_number') is-invalid @enderror" placeholder="Phone Number" name="phone_number" value="{{ old('phone_number') }}">
-                    @error('phone_number')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Start Date</label>
-                  <div class="col-sm-10">
-                    <input type="date" class="form-control @error('start_date') is-invalid @enderror" placeholder="Start Date" name="start_date" value="{{ old('start_date') }}">
-                    @error('start_date')
+                    <input type="text" class="form-control @error('telepon_wali') is-invalid @enderror" placeholder="No. Telepon Wali Murid" name="telepon_wali" value="{{ old('telepon_wali') }}">
+                    @error('telepon_wali')
                       <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->string('name');
-            $table->string('mode'); // reader, add_card
+            $table->string('mode');
             $table->tinyInteger('is_active');
         });
     }

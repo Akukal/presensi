@@ -2,7 +2,7 @@
   <!-- Brand Logo -->
   <a href="{{ route('home') }}" class="brand-link">
     <img src="{{ asset('assets/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light">AmanApps</span>
+    <span class="brand-text font-weight-light">Presma Presence</span>
   </a>
 
   <!-- Sidebar -->
@@ -29,14 +29,14 @@
         </li>
 
         <!-- Data Master -->
-        @canany(['view kelas', 'view position', 'view staff'])
-        <li class="nav-item {{ Route::is('kelas*') || Route::is('positions*') || Route::is('staff*') ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ Route::is('kelas*') || Route::is('positions*') || Route::is('staff*') ? 'active' : '' }}">
+        @canany(['view kelas', 'view guru', 'view tahunAjaran'])
+        <li class="nav-item {{ Route::is('kelas*') || Route::is('guru*') || Route::is('tahunAjaran*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ Route::is('kelas*') || Route::is('guru*') || Route::is('tahunAjaran*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-th"></i>
             <p>Data Master<i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
-            @can('view siswa')
+            @can('view kelas')
             <li class="nav-item">
               <a href="{{ route('kelas.index') }}" class="nav-link {{ Route::is('kelas*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i><p>Kelas</p>
@@ -44,10 +44,10 @@
             </li>
             @endcan
 
-            @canany(['view siswa', 'create siswa', 'edit siswa', 'delete siswa'])
+            @canany(['view guru'])
             <li class="nav-item">
-              <a href="{{ route('siswa.index') }}" class="nav-link {{ Route::is('siswa*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i><p>Jurusan</p>
+              <a href="{{ route('guru.index') }}" class="nav-link {{ Route::is('guru*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i><p>Guru</p>
               </a>
             </li>
             @endcanany

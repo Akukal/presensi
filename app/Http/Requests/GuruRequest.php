@@ -23,7 +23,7 @@ class GuruRequest extends FormRequest
     {
         return [
             'nama' => 'required',
-            'nomor_telepon' => 'required|numeric',
+            'telepon' => 'required|numeric',
         ];
     }
 }

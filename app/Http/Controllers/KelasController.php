@@ -7,9 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\KelasRequest;
 use App\Models\Guru;
 use DataTables;
-use Auth;
 
-class kelasController extends Controller
+class KelasController extends Controller
 {
     public function __construct()
     {
@@ -19,61 +18,41 @@ class kelasController extends Controller
         $this->middleware('permission:delete kelas', ['only' => ['destroy']]);
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view('website.kelas.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $gurus = Guru::all();
         return view('website.kelas.create', compact('gurus'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(KelasRequest $request)
     {
         Kelas::create($request->all());
-        toastr('kelas Created Successfully', 'success', 'kelas');
-
+        toastr('Kelas Created Successfully', 'success', 'Kelas');
         return redirect()->route('kelas.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Kelas $kelas)
     {
-        return view('website.kelas.edit', compact('kelas'));
+        $gurus = Guru::all();
+        return view('website.kelas.edit', compact('kelas', 'gurus'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(KelasRequest $request, kelas $kelas)
+    public function update(KelasRequest $request, Kelas $kelas)
     {
         $kelas->update($request->all());
-        toastr('kelas Updated Successfully', 'success', 'kelas');
-
+        toastr('Kelas Updated Successfully', 'success', 'Kelas');
         return redirect()->route('kelas.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Kelas $kelas)
     {
         $kelas->delete();
-        toastr('kelas Deleted Successfully', 'success', 'kelas');
-
+        toastr('Kelas Deleted Successfully', 'success', 'Kelas');
         return redirect()->route('kelas.index');
     }
 
@@ -83,26 +62,36 @@ class kelasController extends Controller
 
         return DataTables::of($kelas)
             ->addIndexColumn()
-            ->editColumn('is_active', function($kelas) {
-                return $kelas->is_active == 1 ? "<span class='badge badge-success'>Aktif</span>" : "<span class='badge badge-danger'>Non-Aktif</span>"; 
+            ->editColumn('nama', function ($kelas) {
+                return $kelas->nama ? $kelas->nama : "<span class='badge badge-danger'>Nama Tidak Terdaftar</span>";
             })
-            ->addColumn('action', function($kelas) {
-                $action = null;
+            ->addColumn('guru_nama', function ($kelas) {
+                return $kelas->guru && $kelas->guru->nama
+                    ? $kelas->guru->nama
+                    : "<span class='badge badge-danger'>Guru Tidak Ada</span>";
+            })
+            ->addColumn('guru_telepon', function ($kelas) {
+                return $kelas->guru && $kelas->guru->telepon
+                    ? $kelas->guru->telepon
+                    : "<span class='badge badge-secondary'>Tidak Ada Nomor</span>";
+            })
+            ->addColumn('action', function ($kelas) {
+                $action = '';
 
-                if(auth()->user()->hasPermissionTo('edit kelas')) {
-                    $action .= '<a href="'.route('kelas.edit', $kelas->id).'" class="btn btn-warning btn-sm m-1"><i class="fas fa-edit"></i> </a>';
+                if (auth()->user()->hasPermissionTo('edit kelas')) {
+                    $action .= '<a href="' . route('kelas.edit', $kelas->id) . '" class="btn btn-warning btn-sm m-1"><i class="fas fa-edit"></i> </a>';
                 }
 
-                if(auth()->user()->hasPermissionTo('delete kelas')) {
-                    $action .= '<button onclick="deleteConfirm(\''.$kelas->id.'\')" class="btn btn-danger btn-sm m-1"><i class="fa fa-trash"></i></button>
-                    <form method="POST" action="'.route('kelas.destroy', $kelas->id).'" style="display:inline-block;" id="submit_'.$kelas->id.'">
-                        '.method_field('delete').csrf_field().'
+                if (auth()->user()->hasPermissionTo('delete kelas')) {
+                    $action .= '<button onclick="deleteConfirm(\'' . $kelas->id . '\')" class="btn btn-danger btn-sm m-1"><i class="fa fa-trash"></i></button>
+                    <form method="POST" action="' . route('kelas.destroy', $kelas->id) . '" style="display:inline-block;" id="submit_' . $kelas->id . '">
+                        ' . method_field('delete') . csrf_field() . '
                     </form>';
                 }
 
                 return empty($action) ? '-' : $action;
             })
-            ->rawColumns(['action','is_active'])
+            ->rawColumns(['action', 'nama', 'guru_nama', 'guru_telepon'])
             ->make(true);
     }
 }

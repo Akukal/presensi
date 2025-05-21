@@ -23,7 +23,7 @@ class kelasRequest extends FormRequest
     {
         return [
             'nama' => 'required',
-            'wali_kelas' => 'required',
+            'guru_id' => 'required|exists:gurus,id',
         ];
     }
 }

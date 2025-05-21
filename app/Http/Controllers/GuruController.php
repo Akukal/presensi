@@ -29,6 +29,7 @@ class GuruController extends Controller
 
     public function store(GuruRequest $request)
     {
+        Guru::create($request->all());
         toastr('Guru Created Successfully', 'success', 'Guru');
 
         return redirect()->route('guru.index');
@@ -62,10 +63,13 @@ class GuruController extends Controller
 
     public function datatable()
     {
-        $guru = Guru::with(['kelas'])->orderBy('created_at', 'DESC');
+        $guru = Guru::orderBy('created_at', 'DESC');
 
         return DataTables::of($guru)
             ->addIndexColumn()
+            ->editColumn('nama', function($guru) {
+                return $guru->nama ? $guru->nama : "<span class='badge badge-danger'>Nama Tidak Terdaftar</span>"; 
+            })
             ->editColumn('telepon', function($guru) {
                 return $guru->telepon ? $guru->telepon : "<span class='badge badge-danger'>Nomor Telepon Tidak Terdaftar</span>"; 
             })
@@ -85,7 +89,7 @@ class GuruController extends Controller
 
                 return $action;
             })
-            ->rawColumns(['action','gender', 'code'])
+            ->rawColumns(['action','nama', 'telepon'])
             ->make(true);
     }
 }
