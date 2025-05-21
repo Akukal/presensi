@@ -38,7 +38,21 @@
                   <div class="col-sm-10">
                     <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Nama Kelas" name="name" value="{{ old('kelas') }}">
                     @error('name')
-                      <span class="error invalid-feedback">{{ $message }}</span>
+                    <span class="error invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-2 col-form-label">Wali Kelas</label>
+                  <div class="col-sm-10">
+                    <select name="guru_id" class="form-control @error('guru_id') is-invalid @enderror">
+                      <option value="">[ Pilih Guru ]</option>
+                      @foreach($gurus as $guru)
+                      <option value="{{ $guru->id }}" @selected(old('guru_id')==$guru->id)>{{ $guru->nama }}</option>
+                      @endforeach
+                    </select>
+                    @error('guru_id')
+                    <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>
                 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 use App\Http\Requests\KelasRequest;
+use App\Models\Guru;
 use DataTables;
 use Auth;
 
@@ -31,7 +32,8 @@ class kelasController extends Controller
      */
     public function create()
     {
-        return view('website.kelas.create');
+        $gurus = Guru::all();
+        return view('website.kelas.create', compact('gurus'));
     }
 
     /**

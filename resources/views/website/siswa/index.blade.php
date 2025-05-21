@@ -46,6 +46,7 @@
                   <th>Tahun Ajaran</th>
                   <th>RFID</th>
                   <th>Nomor Orang Tua</th>
+                  <th>Nomor Wali Kelas</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -94,7 +95,7 @@
         {data: 'tahun_ajaran', name: 'tahun_ajaran', orderable: true, searchable: true},                    
         {data: 'code', name: 'code', orderable: true, searchable: true},                    
         {data: 'nomor_orang_tua', name: 'nomor_orang_tua', orderable: true, searchable: true},    
-        {data: 'nomor_wali_murid', name: 'nomor_wali_murid', orderable: true, searchable: true},    
+        {data: 'nomor_wali_kelas', name: 'nomor_wali_kelas', orderable: true, searchable: true},    
         {data: 'action', name: 'action', orderable: false, searchable: false}
       ]
     });

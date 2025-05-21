@@ -13,7 +13,7 @@ class Guru extends Model
 
     protected $fillable = [
         'nama',
-        'no_telepon',
+        'telepon',
     ];
 
     public function kelas()
