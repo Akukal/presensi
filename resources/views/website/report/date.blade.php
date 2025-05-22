@@ -1,138 +1,148 @@
-@extends('website.layouts.app', ['title' => 'Presence By Date'])
+@extends('website.layouts.app', ['title' => 'Absensi Siswa By Tanggal'])
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <style>
+    .export-btn-group {
+      display: flex;
+      gap: 8px; 
+      align-items: center;
+      margin-left: 12px;
+    }
+  </style>
 @endpush
 
 @section('content')
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Presence By Date</h1>
+          <h1>Laporan By Tanggal</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Presence By Date</li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+            <li class="breadcrumb-item active">Laporan By Tanggal</li>
           </ol>
         </div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
-
-  <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-
-          @canany(['export excel presence by date', 'export pdf presence by date'])
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Filter</h3>
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <form action="{{ route('reports.date.export') }}" method="GET" target="_blank">
-                  <div class="row">
-                    <div class="col-4">
-                      <input type="date" class="form-control" id="date" name="date" required>
-                    </div>
-                      <div class="col-2">
-                        @can('export excel presence by date')
-                          <button class="btn btn-success" type="submit" value="excel" name="submit"><i class="fa fa-file-excel"></i></button> 
-                        @endcan
-
-                        @can('export pdf presence by date')
-                          <button class="btn btn-danger" type="submit" value="pdf" name="submit"><i class="fa fa-file-pdf"></i></button> 
-                        @endcan
-                      </div>
-                  </div>
-                </form>
-              </div>
-              
-            </div>
-          @endcanany
-          <div class="card">
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table id="datatable" class="table table-striped table-bordered table-hover">
+      <div class="row"><div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Filter</h3>
+          </div>
+          <div class="card-body">
+            <form id="filter-form" class="form-inline mb-3" style="gap: 12px;">
+              <input type="date" class="form-control mr-2" id="date" name="date" placeholder="Pilih tanggal">
+              <button type="submit" class="btn btn-primary" title="Tampilkan"><i class="fa fa-filter"></i></button>
+              <span class="mx-2"></span>
+              @canany(['export excel presence by date', 'export pdf presence by date'])
+                <input type="hidden" id="export-date" name="date" value="">
+                <span class="export-btn-group">
+                  @can('export excel presence by date')
+                    <button type="button" class="btn btn-success" id="btn-export-excel" title="Export Excel">
+                      <i class="fa fa-file-excel"></i>
+                    </button>
+                  @endcan
+                  @can('export pdf presence by date')
+                    <button type="button" class="btn btn-danger" id="btn-export-pdf" title="Export PDF">
+                      <i class="fa fa-file-pdf"></i>
+                    </button>
+                  @endcan
+                </span>
+              @endcanany
+            </form>
+            <div style="overflow-x: auto;">
+              <table id="datatable" class="table table-striped table-bordered table-hover w-100">
                 <thead>
                 <tr>
                   <th>No</th>
-                  <th>Name</th>
-                  <th>Department</th>
-                  <th>Position</th>
-                  <th>Date</th>
-                  <th>Clock In</th>
-                  <th>Clock Out</th>
+                  <th>NIS</th>
+                  <th>Nama</th>
+                  <th>Kelas</th>
+                  <th>Tanggal</th>
+                  <th>Absen Masuk</th>
+                  <th>Absen Pulang</th>
                   <th>Status</th>
+                  <th>Status Masuk</th>
+                  <th>Keterangan</th>
                 </tr>
                 </thead>
-                <tbody>
-              
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
-            <!-- /.card-body -->
           </div>
-          <!-- /.card -->
-          <!-- /.card -->
         </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
+      </div></div>
     </div>
-    <!-- /.container-fluid -->
   </section>
-  <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 @endsection
 
 @push('scripts')
 <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script type="text/javascript">
+<script>
   $(document).ready(function() {
-    datatable();
+    loadTable();
+
+    $('#filter-form').on('submit', function(e){
+      e.preventDefault();
+      loadTable();
+    });
 
     $('#date').on('change', function() {
-      datatable();
+      $('#export-date').val($(this).val());
+    });
+    $('#export-date').val($('#date').val());
+
+    // Export Excel
+    $('#btn-export-excel').on('click', function() {
+      var tanggal = $('#date').val();
+      if (!tanggal) {
+        alert('Pilih tanggal terlebih dahulu!');
+        return;
+      }
+      window.open("{{ route('reports.date.export') }}?date=" + tanggal + "&submit=excel", "_blank");
+    });
+
+    // Export PDF
+    $('#btn-export-pdf').on('click', function() {
+      var tanggal = $('#date').val();
+      if (!tanggal) {
+        alert('Pilih tanggal terlebih dahulu!');
+        return;
+      }
+      window.open("{{ route('reports.date.export') }}?date=" + tanggal + "&submit=pdf", "_blank");
     });
   });
 
-  function datatable()
-  {
+  function loadTable() {
     $('#datatable').DataTable().destroy();
     $('#datatable').DataTable({
-      responsive    : true,
-      processing    : true,
-      serverSide    : true,
-      ajax          : {
-        url     : '{!! route('reports.date.ajax.datatable') !!}',
-        data: {
-          'date': $('#date').val()
-        }
+      responsive: true,
+      processing: true,
+      serverSide: true,
+      ajax: {
+        url: '{{ route('reports.date.ajax.datatable') }}',
+        data: { 'date': $('#date').val() }
       },
-      columns       : [
+      columns: [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-        {data: 'staff.name', name: 'staff.name', orderable: true, searchable: true},                    
-        {data: 'staff.department.name', name: 'staff.department.name', orderable: true, searchable: true},                    
-        {data: 'staff.position.name', name: 'staff.position.name', orderable: true, searchable: true},                    
-        {data: 'date', name: 'date', orderable: false, searchable: false},                    
-        {data: 'clock_in', name: 'clock_in', orderable: false, searchable: false},                    
-        {data: 'clock_out', name: 'clock_out', orderable: false, searchable: false},                    
-        {data: 'status', name: 'status', orderable: false, searchable: false},                    
+        {data: 'siswa.nis', name: 'siswa.nis'},
+        {data: 'siswa.nama', name: 'siswa.nama'},
+        {data: 'kelas', name: 'kelas'},
+        {data: 'tanggal', name: 'tanggal'},
+        {data: 'jam_masuk', name: 'jam_masuk'},
+        {data: 'jam_pulang', name: 'jam_pulang'},
+        {data: 'status', name: 'status'},
+        {data: 'status_masuk', name: 'status_masuk'},
+        {data: 'keterangan', name: 'keterangan'},
       ]
     });
   }
