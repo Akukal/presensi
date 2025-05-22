@@ -8,7 +8,7 @@ use App\Models\Device;
 use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\Rfid;
-use App\Models\Presence;
+use App\Models\AbsenSiswa;
 use Carbon\Carbon;
 
 class PresenceController extends Controller
@@ -55,7 +55,7 @@ class PresenceController extends Controller
                 return "RFID_NOT_FOUND";
             }
     
-            $presenceData = Presence::where(['staff_id' => $siswa->id, 'date' => Carbon::now()->format('Y-m-d')])->first();
+            $presenceData = AbsenSiswa::where(['staff_id' => $siswa->id, 'date' => Carbon::now()->format('Y-m-d')])->first();
     
             $data = [
                 'device_id' => $request->device_id,
@@ -65,7 +65,7 @@ class PresenceController extends Controller
     
             $data[$setting->mode] = empty($presenceData->{$setting->mode}) ? Carbon::now()->format('H:i:s') : $presenceData->{$setting->mode};
     
-            $presence = Presence::updateOrCreate([
+            $presence = AbsenSiswa::updateOrCreate([
                 'staff_id' => $siswa->id,
                 'date' => Carbon::now()->format('Y-m-d')
             ], $data);
