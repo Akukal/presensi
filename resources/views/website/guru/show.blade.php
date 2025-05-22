@@ -29,56 +29,21 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <a href="{{ route('staff.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
+              <a href="{{ route('guru.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
               <table id="datatable" class="table table-bordered table-hover">
                 <tbody>
                     <tr>
-                        <th>RFID</th>
+                        <th>Nama</th>
                         <td>:</td>
-                        <td>{{ $staff->code }}</td>
+                        <td>{{ $guru->nama }}</td>
                     </tr>
                     <tr>
-                        <th>Name</th>
+                        <th>Nomor Telepon</th>
                         <td>:</td>
-                        <td>{{ $staff->name }}</td>
-                    </tr>
-                    <tr>
-                        <th>Departement</th>
-                        <td>:</td>
-                        <td>{{ $staff->department->name }}</td>
-                    </tr>
-                    <tr>
-                        <th>Position</th>
-                        <td>:</td>
-                        <td>{{ $staff->position->name }}</td>
-                    </tr>
-                    <tr>
-                        <th>Gender</th>
-                        <td>:</td>
-                        <td>{{ $staff->gender == 1 ? "Male" : "Female" }}</td>
-                    </tr>
-                    <tr>
-                        <th>Birth Of Date</th>
-                        <td>:</td>
-                        <td>{{ $staff->birth_of_date }}</td>
-                    </tr>
-                    <tr>
-                        <th>Address</th>
-                        <td>:</td>
-                        <td>{{ $staff->address }}</td>
-                    </tr>
-                    <tr>
-                        <th>Phone Number</th>
-                        <td>:</td>
-                        <td>{{ $staff->phone_number }}</td>
-                    </tr>
-                    <tr>
-                        <th>Start Date</th>
-                        <td>:</td>
-                        <td>{{ $staff->start_date }}</td>
+                        <td>{{ $guru->telepon }}</td>
                     </tr>
                 </tbody>
               </table>

@@ -6,14 +6,16 @@ use App\Models\AbsenSiswa;
 use Illuminate\Http\Request;
 use DataTables;
 use Carbon\Carbon;
+use App\Http\Requests\PresenceRequest;
 
 class PresenceController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view presence', ['only' => ['index']]);
+        $this->middleware('permission:view presence|create presence', ['only' => ['index']]);
+        $this->middleware('permission:create presence', ['only' => ['create', 'store']]);
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -22,15 +24,63 @@ class PresenceController extends Controller
         return view('website.presence.index');
     }
 
+    public function create()
+    {
+        return view('website.presence.create');
+    }
+
+    public function store(PresenceRequest $request)
+    {
+        \Log::info('User:', ['id' => auth()->id(), 'permissions' => auth()->user()->getAllPermissions()->pluck('name')]);
+        AbsenSiswa::create($request->all());
+        toastr('Presence Created Successfully', 'success', 'Presence');
+        return redirect()->route('presences.index');
+    }
+
     public function datatable()
     {
-        $prensences = AbsenSiswa::with(['siswa', 'siswa.kelas'])->where('tanggal', Carbon::now()->format('Y-m-d'))->orderBy('created_at', 'DESC');
+        $presensi = AbsenSiswa::with(['siswa.kelas'])->where('tanggal', Carbon::now()->format('Y-m-d'))->orderBy('created_at', 'DESC');
 
-        return DataTables::of($prensences)
+        return DataTables::of($presensi)
             ->addIndexColumn()
-            ->editColumn('jam_keluar', function($data) {
-                return empty($data->jam_keluar) ? '-' : $data->jam_keluar; 
+            ->editColumn('nama', function ($presensi) {
+                return $presensi->siswa->nama ?? '-';
             })
+            ->editColumn('kelas', function ($presensi) {
+                return $presensi->siswa->kelas->nama ?? '-';
+            })
+            ->editColumn('status', function ($presensi) {
+                switch ($presensi->status) {
+                    case 'absen_masuk':
+                        return 'Absen Masuk';
+                    case 'absen_pulang':
+                        return 'Absen Pulang';
+                    case 'izin':
+                        return 'Izin';
+                    case 'sakit':
+                        return 'Sakit';
+                    case 'alfa':
+                        return 'Alfa';
+                    default:
+                        return '-';
+                }
+            })
+            ->editColumn('tanggal', function ($presensi) {
+                return $presensi->tanggal ? Carbon::parse($presensi->tanggal)->format('d-m-Y') : '-';
+            })
+            ->editColumn('jam_masuk', function ($presensi) {
+                return $presensi->jam_masuk ? Carbon::parse($presensi->jam_masuk)->format('H:i:s') : '-';
+            })
+            ->editColumn('jam_pulang', function ($presensi) {
+                return $presensi->jam_pulang ? Carbon::parse($presensi->jam_pulang)->format('H:i:s') : '-';
+            })
+            ->editColumn('status_masuk', function ($presensi) {
+                return $presensi->status_masuk == 'telat' ? 'Telat' : ($presensi->status_masuk == 'tepat_waktu' ? 'Tepat Waktu' : '-');
+            })
+            ->addColumn('action', function ($presensi) {
+                return '<a href="' . route('presence.show', $presensi->id) . '" class="btn btn-info btn-sm">Detail</a>';
+            })
+            ->rawColumns(['action'])
             ->make(true);
     }
 }

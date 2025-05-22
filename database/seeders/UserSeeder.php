@@ -57,6 +57,7 @@ class UserSeeder extends Seeder
         Permission::create(['name' => 'edit setting']);
 
         Permission::create(['name' => 'view presence']);
+        Permission::create(['name' => 'create presence']);
 
         Permission::create(['name' => 'view presence by date']);
         Permission::create(['name' => 'export excel presence by date']);

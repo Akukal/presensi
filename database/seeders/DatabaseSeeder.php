@@ -21,13 +21,11 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserSeeder::class,
-            DepartmentSeeder::class,
-            PositionSeeder::class,
-            DeviceSeeder::class,
-            StaffSeeder::class,
             RfidSeeder::class,
             SettingSeeder::class,
-            PresenceSeeder::class,
+            GuruSeeder::class,
+            KelasSeeder::class,
+            SiswaSeeder::class,
         ]);
     }
 }

@@ -11,6 +11,8 @@ class Kelas extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
+    // protected $table = 'kelas';
+
     protected $fillable = [
         'id',
         'nama',

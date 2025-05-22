@@ -1,33 +1,39 @@
-@extends('website.layouts.app', ['title' => 'Tambah Presensi Manual'])
+@extends('website.layouts.app', ['title' => 'Add Presensi Siswa'])
 
 @section('content')
+<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
+  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Tambah Presensi Manual</h1>
+          <h1>Add Presensi Siswa</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('presences.index') }}">Presences</a></li>
-            <li class="breadcrumb-item active">Tambah Presensi</li>
+            <li class="breadcrumb-item active">Add Presensi</li>
           </ol>
         </div>
       </div>
-    </div>
+    </div><!-- /.container-fluid -->
   </section>
 
+  <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card card-primary">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- /.card -->
+          <!-- Horizontal Form -->
+          <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Form Presensi Manual</h3>
+              <a href="{{ route('presences.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
             </div>
-            <form action="{{ route('presences.store') }}" method="POST">
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form class="form-horizontal" method="POST" action="{{ route('presences.store') }}">
               @csrf
               <div class="card-body">
                 <div class="form-group">
@@ -35,7 +41,9 @@
                   <select name="siswa_id" id="siswa_id" class="form-control" required>
                     <option value="">-- Pilih Siswa --</option>
                     @foreach(\App\Models\Siswa::with('kelas')->get() as $siswa)
-                      <option value="{{ $siswa->id }}">{{ $siswa->nama }} ({{ $siswa->kelas->kelas ?? '-' }})</option>
+                    <option value="{{ $siswa->id }}">
+                      {{ $siswa->nama }} ({{ $siswa->kelas->nama ?? '-' }})
+                    </option>
                     @endforeach
                   </select>
                 </div>
@@ -74,15 +82,21 @@
                   <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
                 </div>
               </div>
+              <!-- /.card-body -->
               <div class="card-footer">
-                <a href="{{ route('presences.index') }}" class="btn btn-secondary">Batal</a>
-                <button type="submit" class="btn btn-primary float-right">Simpan</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
               </div>
+              <!-- /.card-footer -->
             </form>
           </div>
+          <!-- /.card -->
+
         </div>
       </div>
-    </div>
+      <!-- /.row -->
+    </div><!-- /.container-fluid -->
   </section>
+  <!-- /.content -->
 </div>
+<!-- /.content-wrapper -->
 @endsection
