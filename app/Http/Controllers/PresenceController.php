@@ -12,7 +12,7 @@ class PresenceController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view presence|create presence', ['only' => ['index']]);
+        $this->middleware('permission:view presence|create presence', ['only' => 'index']);
         $this->middleware('permission:create presence', ['only' => ['create', 'store']]);
     }
 
@@ -31,7 +31,6 @@ class PresenceController extends Controller
 
     public function store(PresenceRequest $request)
     {
-        \Log::info('User:', ['id' => auth()->id(), 'permissions' => auth()->user()->getAllPermissions()->pluck('name')]);
         AbsenSiswa::create($request->all());
         toastr('Presence Created Successfully', 'success', 'Presence');
         return redirect()->route('presences.index');
@@ -77,10 +76,23 @@ class PresenceController extends Controller
             ->editColumn('status_masuk', function ($presensi) {
                 return $presensi->status_masuk == 'telat' ? 'Telat' : ($presensi->status_masuk == 'tepat_waktu' ? 'Tepat Waktu' : '-');
             })
-            ->addColumn('action', function ($presensi) {
-                return '<a href="' . route('presence.show', $presensi->id) . '" class="btn btn-info btn-sm">Detail</a>';
+            ->addColumn('action', function($presensi) {
+                $action = '';
+
+                if(auth()->user()->hasPermissionTo('edit presensi')) {
+                    $action .= '<a href="'.route('presence.edit', $presensi->id).'" class="btn btn-warning btn-sm m-1"><i class="fas fa-edit"></i> </a>';
+                }
+
+                if(auth()->user()->hasPermissionTo('delete presensi')) {
+                    $action .= '<button onclick="deleteConfirm(\''.$presensi->id.'\')" class="btn btn-danger btn-sm m-1"><i class="fa fa-trash"></i></button>
+                    <form method="POST" action="'.route('presence.destroy', $presensi->id).'" style="display:inline-block;" id="submit_'.$presensi->id.'">
+                        '.method_field('delete').csrf_field().'
+                    </form>';
+                }
+
+                return empty($action) ? '-' : $action;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'status_masuk', 'status', 'tanggal', 'jam_masuk', 'jam_pulang', 'status_masuk', 'nama', 'kelas'])
             ->make(true);
     }
 }

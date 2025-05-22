@@ -86,13 +86,13 @@
       },
       columns: [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-        {data: 'nama', name: 'nama'},                    
+        {data: 'nama', name: 'nama'},
         {data: 'kelas', name: 'kelas'},
-        {data: 'status', name: 'status'},                    
-        {data: 'tanggal', name: 'tanggal'},                    
-        {data: 'jam_masuk', name: 'jam_masuk'},                    
-        {data: 'jam_pulang', name: 'jam_pulang'},                    
-        {data: 'status_masuk', name: 'status_masuk'},     
+        {data: 'status', name: 'status'},
+        {data: 'tanggal', name: 'tanggal'},
+        {data: 'jam_masuk', name: 'jam_masuk'},
+        {data: 'jam_pulang', name: 'jam_pulang'},
+        {data: 'status_masuk', name: 'status_masuk'},
         {data: 'action', name: 'action', orderable: false, searchable: false}
     ]
     });

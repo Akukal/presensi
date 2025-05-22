@@ -18,8 +18,8 @@ return new class extends Migration
             $table->uuid('siswa_id');
             $table->date('tanggal');
             $table->enum('status', ['tidak_absen_masuk', 'tidak_absen_pulang', 'absen_masuk', 'absen_pulang', 'alfa', 'izin', 'sakit', 'tap_masuk']);
-            $table->time('jam_masuk')->nullable;
-            $table->time('jam_pulang')->nullable;
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_pulang')->nullable();
             $table->enum('status_masuk', ['telat', 'tepat_waktu']);
             $table->text('keterangan')->nullable();
 

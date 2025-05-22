@@ -11,7 +11,7 @@ class PresenceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,11 +22,11 @@ class PresenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_siswa' => 'required|exists:siswa,id',
+            'siswa_id' => 'required|exists:siswas,id',
             'tanggal' => 'required|date',
-            'status' => 'required|in:hadir,izin,sakit,alfa',
-            'jam_masuk' => 'required|date_format:H:i:s',
-            'jam_keluar' => 'nullable|date_format:H:i:s',
+            'status' => 'required|in:absen_masuk,absen_pulang,izin,sakit,alfa',
+            'jam_masuk' => 'required|date_format:H:i',
+            'jam_pulang' => 'nullable|date_format:H:i',
             'status_masuk' => 'nullable|in:telat,tepat_waktu',
             'keterangan' => 'nullable|string|max:255',
         ];
