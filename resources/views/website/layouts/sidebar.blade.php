@@ -44,13 +44,13 @@
             </li>
             @endcan
 
-            @canany(['view guru'])
+            @can('view guru')
             <li class="nav-item">
               <a href="{{ route('guru.index') }}" class="nav-link {{ Route::is('guru*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i><p>Guru</p>
               </a>
             </li>
-            @endcanany
+            @endcan
           </ul>
         </li>
         @endcanany
@@ -75,21 +75,46 @@
             </li>
           </ul>
         </li>
+        @endcan
 
         <!-- Laporan Siswa -->
-        <li class="nav-item">
-          <a href="{{ route('presences.index') }}" class="nav-link">
+        @canany(['view presence by date', 'view presence by staff'])
+        <li class="nav-item {{ Route::is('reports.date*') || Route::is('laporan.siswa') || Route::is('laporan.siswa.rekap*') || Route::is('laporan.siswa.detail') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ Route::is('reports.date*') || Route::is('laporan.siswa') || Route::is('laporan.siswa.rekap*') || Route::is('laporan.siswa.detail') ? 'active' : '' }}">
             <i class="nav-icon fas fa-copy"></i>
-            <p>Laporan Siswa<i class="right fas fa-angle-left"></i></p>
+            <p>
+              Laporan Siswa
+              <i class="right fas fa-angle-left"></i>
+            </p>
           </a>
           <ul class="nav nav-treeview">
-            <li class="nav-item"><a href="{{ route('presences.index') }}" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Laporan By Tanggal</p></a></li>
-            <li class="nav-item"><a href="{{ route('presences.index') }}" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Laporan By Siswa</p></a></li>
-            <li class="nav-item"><a href="{{ route('presences.index') }}" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Rekap Absensi Siswa</p></a></li>
-            <li class="nav-item"><a href="{{ route('presences.index') }}" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Detail Absensi Siswa</p></a></li>
+            <li class="nav-item">
+              <a href="{{ route('reports.date') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Laporan By Tanggal</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('laporan.siswa') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Laporan By Siswa</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('laporan.siswa.rekap') }}" class="nav-link {{ Route::is('laporan.siswa.rekap*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Rekap Absensi Siswa</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('laporan.siswa.detail') }}" class="nav-link {{ Route::is('laporan.siswa.detail') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Detail Absensi Siswa</p>
+              </a>
+            </li>
           </ul>
         </li>
-        @endcan
+        @endcanany
 
         <!-- Settings -->
         @can('view setting')
@@ -106,20 +131,6 @@
           </ul>
         </li>
         @endcan
-
-        <!-- Reports -->
-        @canany(['view presence by date', 'view presence by staff'])
-        <li class="nav-item {{ Route::is('reports.date*') || Route::is('reports.staff*') ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ Route::is('reports.date*') || Route::is('reports.staff*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-copy"></i>
-            <p>Reports<i class="fas fa-angle-left right"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item"><a href="{{ route('reports.date') }}" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Report By Date</p></a></li>
-            <li class="nav-item"><a href="{{ route('reports.staff') }}" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Report By Staff</p></a></li>
-          </ul>
-        </li>
-        @endcanany
 
         <!-- RFID -->
         @can('view rfid')
