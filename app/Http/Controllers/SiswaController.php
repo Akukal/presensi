@@ -16,13 +16,14 @@ class SiswaController extends Controller
     {
         $this->middleware('permission:view siswa|create siswa|edit siswa|delete siswa', ['only' => ['index', 'show']]);
         $this->middleware('permission:create siswa', ['only' => ['create', 'store']]);
-        $this->middleware('permission:edit siswa', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:edit siswa', ['only' => ['edit', 'update', 'daftarRfid']]);
         $this->middleware('permission:delete siswa', ['only' => ['destroy']]);
     }
 
     public function index()
     {
-        return view('website.siswa.index');
+        $rfids = Rfid::where('status', 0)->get();
+        return view('website.siswa.index', compact('rfids'));
     }
 
     public function create()
@@ -35,7 +36,6 @@ class SiswaController extends Controller
 
     public function store(SiswaRequest $request)
     {
-        // dd($request->all());
         Siswa::create($request->all());
 
         toastr('Siswa Created Successfully', 'success', 'Siswa');
@@ -50,8 +50,31 @@ class SiswaController extends Controller
     public function edit(Siswa $siswa)
     {
         $kelas = Kelas::all();
+        $rfids = Rfid::where('status', 0)->get();
 
-        return view('website.siswa.edit', compact('siswa', 'kelas'));
+        return view('website.siswa.edit', compact('siswa', 'kelas', 'rfids'));
+    }
+
+    public function daftarRfid(Request $request)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:siswas,id',
+            'code' => 'required|exists:rfids,code',
+        ]);
+
+        // Ambil data RFID berdasarkan code
+        $rfid = Rfid::where('code', $request->code)->firstOrFail();
+
+        // Update siswa
+        $siswa = Siswa::findOrFail($request->siswa_id);
+        $siswa->rfid_id = $rfid->id;
+        $siswa->save();
+
+        // Update RFID jadi aktif
+        $rfid->update(['status' => 1]);
+
+        toastr('RFID berhasil didaftarkan!', 'success', 'RFID');
+        return redirect()->route('siswa.index');
     }
 
     public function update(SiswaRequest $request, Siswa $siswa)
@@ -76,36 +99,28 @@ class SiswaController extends Controller
 
         return DataTables::of($siswa)
             ->addIndexColumn()
-
             // NIS
             ->editColumn('nis', fn($s) => e($s->nis))
-
             // Nama
             ->editColumn('nama', fn($s) => e($s->nama))
-
             // Gender
             ->editColumn('gender', function ($s) {
                 return $s->gender == 1
                     ? "<span class='badge badge-success'>Pria</span>"
                     : "<span class='badge badge-danger'>Wanita</span>";
             })
-            
             // Kelas
             ->editColumn('kelas_id', fn($s) => $s->kelas?->nama ?? "<span class='badge badge-secondary'>No Kelas</span>")
-
             // Nomor Wali
             ->editColumn('telepon_wali', fn($s) => e($s->telepon_wali))
-
             // Guru
             ->addColumn('guru_telepon', fn($s) => $s->kelas?->guru?->telepon ?? "<span class='badge badge-secondary'>No Guru</span>")
-
             // RFID
             ->editColumn('code', function ($s) {
-                return $s->code
-                    ? e($s->code)
-                    : "<span class='badge badge-danger'>No RFID yet</span>";
+                return $s->rfid?->code
+                    ? e($s->rfid->code)
+                    : '<span class="badge badge-danger"><button type="button" class="btn btn-primary btn-daftar-rfid" data-id="' . $s->id . '" data-toggle="modal" data-target="#modalRfid">Daftar RFID</button></span>';
             })
-
             // Action Buttons
             ->addColumn('action', function ($s) {
                 $action = '<a href="' . route('siswa.show', $s->id) . '" class="btn btn-info btn-sm m-1"><i class="fas fa-th"></i></a>';
@@ -124,8 +139,7 @@ class SiswaController extends Controller
 
                 return $action;
             })
-
-            ->rawColumns(['nis','nama', 'gender', 'kelas_id', 'telepon_wali', 'guru_telepon', 'code', 'action'])
+            ->rawColumns(['nis', 'nama', 'gender', 'kelas_id', 'telepon_wali', 'guru_telepon', 'code', 'action'])
             ->make(true);
     }
 }

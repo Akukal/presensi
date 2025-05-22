@@ -13,5 +13,11 @@ class Rfid extends Model
     protected $fillable = [
         'id', 
         'code',
+        'status',
     ];
+
+    public function siswa()
+    {
+        return $this->hasMany(Siswa::class);
+    }
 }

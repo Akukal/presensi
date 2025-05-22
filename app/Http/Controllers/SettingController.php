@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class SettingController extends Controller
 {
@@ -29,13 +30,28 @@ class SettingController extends Controller
     {
         Setting::updateOrCreate([
             'id' => $request->id,
-        ],[
-            'mode' => $request->mode ? $request->mode : 'clock_in',
-            'secret_key' => $request->new_secret_key ? Setting::quickRandom(16) : $request->secret_key
+        ], [
+            'secret_key' => $request->new_secret_key ? Setting::quickRandom(16) : $request->secret_key,
+            'mulai_masuk_siswa' => $request->mulai_masuk_siswa,
+            'jam_masuk_siswa' => $request->jam_masuk_siswa,
+            'jam_pulang_siswa' => $request->jam_pulang_siswa,
+            'batas_pulang_siswa' => $request->batas_pulang_siswa,
         ]);
-        
-        toastr('Setting Updated Successfully', 'success', 'Setting', ['positionClass' => 'toast-bottom-right']);
 
+        toastr('Setting Updated Successfully', 'success', 'Setting');
         return redirect()->route('settings.index');
+    }
+
+    public function getModeByTime($setting)
+    {
+        $now = Carbon::now()->format('H:i');
+
+        if ($now >= $setting->mulai_masuk_siswa && $now <= $setting->jam_masuk_siswa) {
+            return 'jam_masuk'; // Mode masuk
+        } elseif ($now >= $setting->jam_pulang_siswa && $now <= $setting->batas_pulang_siswa) {
+            return 'jam_pulang'; // Mode pulang
+        }
+        // Default mode jika di luar jam
+        return 'none';
     }
 }

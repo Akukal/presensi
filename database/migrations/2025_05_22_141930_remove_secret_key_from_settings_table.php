@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rfids', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->timestamps();
-            $table->string('code');
-            $table->tinyInteger('status')->default(0);
+        Schema::table('settings', function (Blueprint $table) {
+            //
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rfids');
+        Schema::table('settings', function (Blueprint $table) {
+            //
+        });
     }
 };

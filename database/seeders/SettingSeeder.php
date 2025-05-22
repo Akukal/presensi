@@ -14,8 +14,6 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         Setting::create([
-            'secret_key' => '09KOb6arkLbPBihp',
-            'mode' => 'clock_in',
         ]);
     }
 }

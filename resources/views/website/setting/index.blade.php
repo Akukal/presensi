@@ -34,28 +34,21 @@
               @csrf
               <div class="card-body">
               @if($setting)
-                <div class="form-group row">
-                  <input type="hidden" value="{{ $setting->id }}" name="id">
-                  <label class="col-sm-2 col-form-label">Secret Key</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control @error('secret_key') is-invalid @enderror" placeholder="Secret Key" name="secret_key" value="{{ old('secret_key', $setting->secret_key) }}" readonly>
-                    @error('secret_key')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  
-                  </div>
+                <div class="form-group">
+                  <label for="mulai_masuk_siswa">Mulai Masuk Siswa</label>
+                  <input type="time" name="mulai_masuk_siswa" class="form-control" value="{{ old('mulai_masuk_siswa', $setting->mulai_masuk_siswa ?? '') }}">
                 </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Mode</label>
-                  <div class="col-sm-10">
-                    <select name="mode" class="form-control @error('mode') is-invalid @enderror">
-                      <option value="clock_in" @selected($errors->any() ? (old('mode') == "clock_in") : $setting->mode == "clock_in")>Clock In</option>
-                      <option value="clock_out" @selected($errors->any() ? (old('mode') == "clock_out") : $setting->mode == "clock_out")>Clock Out</option>
-                    </select>
-                    @error('mode')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
+                <div class="form-group">
+                    <label for="jam_masuk_siswa">Jam Masuk Siswa</label>
+                    <input type="time" name="jam_masuk_siswa" class="form-control" value="{{ old('jam_masuk_siswa', $setting->jam_masuk_siswa ?? '') }}">
+                </div>
+                <div class="form-group">
+                    <label for="jam_pulang_siswa">Jam Pulang Siswa</label>
+                    <input type="time" name="jam_pulang_siswa" class="form-control" value="{{ old('jam_pulang_siswa', $setting->jam_pulang_siswa ?? '') }}">
+                </div>
+                <div class="form-group">
+                    <label for="batas_pulang_siswa">Batas Pulang Siswa</label>
+                    <input type="time" name="batas_pulang_siswa" class="form-control" value="{{ old('batas_pulang_siswa', $setting->batas_pulang_siswa ?? '') }}">
                 </div>
               @else
                 <h3 class="card-title">Data setting tidak silakan lakukan generate data</h3>
@@ -67,7 +60,6 @@
                   @if($setting)
                     <button type="submit" class="btn btn-primary">Save</button>
                   @endif
-                  <button type="submit" class="btn btn-danger" name="new_secret_key" value="new_secret_key">Generate New Secret Key</button>
                 </div>
               @endcan
               <!-- /.card-footer -->

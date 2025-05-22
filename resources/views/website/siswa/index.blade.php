@@ -19,7 +19,7 @@
           </ol>
         </div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
 
   <!-- Main content -->
@@ -33,7 +33,6 @@
                 <a href="{{ route('siswa.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Create New</a>
               </div>
             @endcan
-            <!-- /.card-header -->
             <div class="card-body" style="overflow-x:auto;">
               <table id="datatable" class="table table-bordered table-hover w-100">
                 <thead>
@@ -52,10 +51,38 @@
                 <tbody>
                 </tbody>
               </table>
+              <!-- Modal Daftar RFID (hanya satu, dinamis via JS) -->
+              <div class="modal fade" id="modalRfid" tabindex="-1" role="dialog" aria-labelledby="modalRfidLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <form id="formDaftarRfid" method="POST" action="{{ route('siswa.daftarRfid') }}">
+                    @csrf
+                    <input type="hidden" name="siswa_id" id="inputSiswaId">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modalRfidLabel">Pilih RFID</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <select name="code" class="form-control" required>
+                          <option value="">-- Pilih RFID --</option>
+                          @foreach($rfids as $rfid)
+                            <option value="{{ $rfid->code }}">{{ $rfid->code }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
             <!-- /.card-body -->
           </div>
-          <!-- /.card -->
           <!-- /.card -->
         </div>
         <!-- /.col -->
@@ -80,7 +107,7 @@
       responsive : true,
       processing : true,
       serverSide : true,
-      scrollX : true, // tambahkan ini agar datatable bisa scroll horizontal
+      scrollX : true,
       ajax : {
         url : '{!! route('siswa.ajax.datatable') !!}',
       },
@@ -95,6 +122,13 @@
         {data: 'code', name: 'code', orderable: true, searchable: true},
         {data: 'action', name: 'action', orderable: false, searchable: false}
       ]
+    });
+
+    // Modal Daftar RFID dinamis
+    $(document).on('click', '.btn-daftar-rfid', function() {
+      var siswaId = $(this).data('id');
+      $('#inputSiswaId').val(siswaId);
+      $('#modalRfid').modal('show');
     });
   });
 

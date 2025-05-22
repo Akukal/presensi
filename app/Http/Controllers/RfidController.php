@@ -14,7 +14,7 @@ class RfidController extends Controller
         $this->middleware('permission:view rfid|delete rfid', ['only' => ['index']]);
         $this->middleware('permission:delete rfid', ['only' => ['destroy']]);
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -29,7 +29,7 @@ class RfidController extends Controller
     public function destroy(Rfid $rfid)
     {
         $rfid->delete();
-        toastr('RFID Deleted Successfully', 'success', 'RFID', ['positionClass' => 'toast-bottom-right']);
+        toastr('RFID Deleted Successfully', 'success', 'RFID');
 
         return redirect()->route('rfids.index');
     }
@@ -40,22 +40,27 @@ class RfidController extends Controller
 
         return DataTables::of($rfids)
             ->addIndexColumn()
-            ->editColumn('is_active', function($rfids) {
-                return $rfids->is_active == 0 ? "<span class='badge badge-success'>Ready To Use</span>" : "<span class='badge badge-danger'>Non-Aktif</span>"; 
+            // Tampilkan kode RFID
+            ->editColumn('code', function ($rfid) {
+                return $rfid->code ?? '-';
             })
-            ->addColumn('action', function($rfids) {
+            // Tampilkan status aktif/tidak aktif
+            ->editColumn('status', function ($rfid) {
+                return $rfid->status == 0
+                    ? "<span class='badge badge-success'>Tidak Aktif</span>"
+                    : "<span class='badge badge-danger'>Aktif</span>";
+            })
+            ->addColumn('action', function ($rfid) {
                 $action = '';
-
-                if(auth()->user()->hasPermissionTo('delete rfid')) {
-                $action .= '<button onclick="deleteConfirm(\''.$rfids->id.'\')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
-                    <form method="POST" action="'.route('rfids.destroy', $rfids->id).'" style="display:inline-block;" id="submit_'.$rfids->id.'">
-                        '.method_field('delete').csrf_field().'
+                if (auth()->user()->hasPermissionTo('delete rfid')) {
+                    $action .= '<button onclick="deleteConfirm(\'' . $rfid->id . '\')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                    <form method="POST" action="' . route('rfids.destroy', $rfid->id) . '" style="display:inline-block;" id="submit_' . $rfid->id . '">
+                        ' . method_field('delete') . csrf_field() . '
                     </form>';
                 }
-
                 return empty($action) ? '-' : $action;
             })
-            ->rawColumns(['action','is_active'])
+            ->rawColumns(['status', 'action'])
             ->make(true);
     }
 }

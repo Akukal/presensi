@@ -76,23 +76,7 @@ class PresenceController extends Controller
             ->editColumn('status_masuk', function ($presensi) {
                 return $presensi->status_masuk == 'telat' ? 'Telat' : ($presensi->status_masuk == 'tepat_waktu' ? 'Tepat Waktu' : '-');
             })
-            ->addColumn('action', function($presensi) {
-                $action = '';
-
-                if(auth()->user()->hasPermissionTo('edit presence')) {
-                    $action .= '<a href="'.route('presences.edit', $presensi->id).'" class="btn btn-warning btn-sm m-1"><i class="fas fa-edit"></i> </a>';
-                }
-
-                if(auth()->user()->hasPermissionTo('delete presence')) {
-                    $action .= '<button onclick="deleteConfirm(\''.$presensi->id.'\')" class="btn btn-danger btn-sm m-1"><i class="fa fa-trash"></i></button>
-                    <form method="POST" action="'.route('presences.destroy', $presensi->id).'" style="display:inline-block;" id="submit_'.$presensi->id.'">
-                        '.method_field('delete').csrf_field().'
-                    </form>';
-                }
-
-                return empty($action) ? '-' : $action;
-            })
-            ->rawColumns(['action', 'status_masuk', 'status', 'tanggal', 'jam_masuk', 'jam_pulang', 'status_masuk', 'nama', 'kelas'])
+            ->rawColumns(['status_masuk', 'status', 'tanggal', 'jam_masuk', 'jam_pulang', 'status_masuk', 'nama', 'kelas'])
             ->make(true);
     }
 }

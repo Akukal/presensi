@@ -35,6 +35,7 @@
                 <tr>
                   <th>No</th>
                   <th>Code</th>
+                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -75,7 +76,8 @@
       },
       columns : [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-        {data: 'code', name: 'code', orderable: true, searchable: true},                                   
+        {data: 'code', name: 'code', orderable: true, searchable: true},
+        {data: 'status', name: 'status', orderable: true, searchable: true},
         {data: 'action', name: 'action', orderable: false, searchable: false}
       ]
     });

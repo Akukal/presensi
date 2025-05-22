@@ -18,10 +18,11 @@ return new class extends Migration
             $table->integer('nis');
             $table->string('nama');
             $table->tinyInteger('gender');
-            $table->string('code')->nullable();
+            $table->uuid('rfid_id')->nullable();
             $table->uuid('kelas_id');
             $table->string('telepon_wali');
 
+            $table->foreign('rfid_id')->references('id')->on('rfids')->onDelete('set null');
             $table->foreign('kelas_id')->references('id')->on('kelas')->onDelete('cascade');
         });
     }

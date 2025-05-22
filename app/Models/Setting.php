@@ -12,8 +12,10 @@ class Setting extends Model
 
     protected $fillable = [
         'id',
-        'mode',
-        'secret_key',
+        'mulai_masuk_siswa',
+        'jam_masuk_siswa',
+        'jam_pulang_siswa',
+        'batas_pulang_siswa',
     ];
 
     public static function quickRandom($length = 16)

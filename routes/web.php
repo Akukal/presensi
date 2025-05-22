@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('rfids/ajax/datatable', [RfidController::class, 'datatable'])->name('rfids.ajax.datatable');
 
     Route::resource('siswa', SiswaController::class);
+    Route::post('/siswa/daftar-rfid', [ SiswaController::class, 'daftarRfid'])->name('siswa.daftarRfid');
     Route::get('siswa/ajax/datatable', [SiswaController::class, 'datatable'])->name('siswa.ajax.datatable');
 
     Route::resource('guru', GuruController::class);

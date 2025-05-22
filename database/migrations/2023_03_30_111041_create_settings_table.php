@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
-            $table->string('mode')->default('clock_in'); // clock_in, clock_out
-            $table->string('secret_key');
+            $table->time('mulai_masuk_siswa')->nullable();
+            $table->time('jam_masuk_siswa')->nullable();
+            $table->time('jam_pulang_siswa')->nullable();
+            $table->time('batas_pulang_siswa')->nullable();
         });
     }
 

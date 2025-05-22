@@ -46,7 +46,6 @@
                   <th>Jam Masuk</th>
                   <th>Jam Keluar</th>
                   <th>Status Masuk</th>
-                  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -93,7 +92,6 @@
         {data: 'jam_masuk', name: 'jam_masuk'},
         {data: 'jam_pulang', name: 'jam_pulang'},
         {data: 'status_masuk', name: 'status_masuk'},
-        {data: 'action', name: 'action', orderable: false, searchable: false}
     ]
     });
   });

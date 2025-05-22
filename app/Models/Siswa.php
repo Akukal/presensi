@@ -16,7 +16,7 @@ class Siswa extends Model
         'nis',
         'nama',
         'gender',
-        'code',
+        'rfid_id',
         'kelas_id',
         'telepon_wali',
     ];
@@ -29,5 +29,10 @@ class Siswa extends Model
     public function guru()
     {
         return $this->belongsTo(Guru::class);
+    }
+
+    public function rfid()
+    {
+        return $this->belongsTo(Rfid::class);
     }
 }
