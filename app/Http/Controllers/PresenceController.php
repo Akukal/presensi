@@ -79,13 +79,13 @@ class PresenceController extends Controller
             ->addColumn('action', function($presensi) {
                 $action = '';
 
-                if(auth()->user()->hasPermissionTo('edit presensi')) {
-                    $action .= '<a href="'.route('presence.edit', $presensi->id).'" class="btn btn-warning btn-sm m-1"><i class="fas fa-edit"></i> </a>';
+                if(auth()->user()->hasPermissionTo('edit presence')) {
+                    $action .= '<a href="'.route('presences.edit', $presensi->id).'" class="btn btn-warning btn-sm m-1"><i class="fas fa-edit"></i> </a>';
                 }
 
-                if(auth()->user()->hasPermissionTo('delete presensi')) {
+                if(auth()->user()->hasPermissionTo('delete presence')) {
                     $action .= '<button onclick="deleteConfirm(\''.$presensi->id.'\')" class="btn btn-danger btn-sm m-1"><i class="fa fa-trash"></i></button>
-                    <form method="POST" action="'.route('presence.destroy', $presensi->id).'" style="display:inline-block;" id="submit_'.$presensi->id.'">
+                    <form method="POST" action="'.route('presences.destroy', $presensi->id).'" style="display:inline-block;" id="submit_'.$presensi->id.'">
                         '.method_field('delete').csrf_field().'
                     </form>';
                 }
