@@ -39,20 +39,18 @@ class PresenceController extends Controller
 
     public function presence(Request $request)
     {
-        // Tidak perlu cek secret_key jika ingin semua device bisa request
         $setting = Setting::first();
-        // menentukan mode jam masuk atau jam pulang
         $mode = $this->getModeByTime($setting);
-        // Gunakan $mode untuk menentukan proses selanjutnya
-        // Contoh:
+
         if ($mode == 'jam_masuk') {
-            // Proses absen masuk
+            $setting->mode = 'clock_in';
         } elseif ($mode == 'jam_pulang') {
-            // Proses absen pulang
+            $setting->mode = 'clock_out';
         } else {
             return response()->json(['message' => 'Di luar jam absensi'], 403);
         }
-        // Otomatis buat device jika belum ada
+
+        // Device
         $device = Device::firstOrCreate(
             ['id' => $request->device_id],
             [
@@ -61,39 +59,48 @@ class PresenceController extends Controller
                 'is_active' => 1
             ]
         );
-        $siswa = Siswa::where('code', $request->rfid)->first();
 
         if (!$device) {
             return "DEVICE_NOT_FOUND";
         }
 
+        // Mode add_card: daftarkan RFID baru
         if ($device->mode == "add_card") {
             Rfid::updateOrCreate(['code' => $request->rfid]);
             return "RFID_REGISTERED";
-        } else {
-            if (!$siswa) {
-                return "RFID_NOT_FOUND";
-            }
-
-            $presenceData = AbsenSiswa::where([
-                'siswa_id' => $siswa->id,
-                'date' => Carbon::now()->format('Y-m-d')
-            ])->first();
-
-            $data = [
-                'device_id' => $request->device_id,
-                'date' => Carbon::now()->format('Y-m-d'),
-                'status' => 'present',
-            ];
-
-            $data[$setting->mode] = empty($presenceData->{$setting->mode}) ? Carbon::now()->format('H:i:s') : $presenceData->{$setting->mode};
-
-            $presence = AbsenSiswa::updateOrCreate([
-                'staff_id' => $siswa->id,
-                'date' => Carbon::now()->format('Y-m-d')
-            ], $data);
-
-            return $setting->mode == "clock_in" ? "PRESENCE_CLOCK_IN_SAVED" : "PRESENCE_CLOCK_OUT_SAVED";
         }
+
+        // Cari RFID
+        $rfid = Rfid::where('code', $request->rfid)->first();
+        if (!$rfid) {
+            return "RFID_NOT_FOUND";
+        }
+
+        // Cari siswa berdasarkan rfid_id
+        $siswa = Siswa::where('rfid_id', $rfid->id)->first();
+        if (!$siswa) {
+            return "RFID_NOT_FOUND";
+        }
+
+        // Cek data presensi hari ini
+        $presenceData = AbsenSiswa::where([
+            'siswa_id' => $siswa->id,
+            'date' => Carbon::now()->format('Y-m-d')
+        ])->first();
+
+        $data = [
+            'device_id' => $request->device_id,
+            'date' => Carbon::now()->format('Y-m-d'),
+            'status' => 'present',
+        ];
+
+        $data[$setting->mode] = empty($presenceData->{$setting->mode}) ? Carbon::now()->format('H:i:s') : $presenceData->{$setting->mode};
+
+        $presence = AbsenSiswa::updateOrCreate([
+            'siswa_id' => $siswa->id,
+            'date' => Carbon::now()->format('Y-m-d')
+        ], $data);
+
+        return $setting->mode == "clock_in" ? "PRESENCE_CLOCK_IN_SAVED" : "PRESENCE_CLOCK_OUT_SAVED";
     }
 }
