@@ -39,17 +39,36 @@ class PresenceController extends Controller
         return $device->mode == "add_card" ? "CARD_ADD_MODE" : "READER_MODE";
     }
 
+    public function getModeByTime($setting)
+    {
+        $setting = Setting::first();
+        $now = Carbon::now()->format('H:i');
+
+        if ($now >= $setting->mulai_masuk_siswa && $now <= $setting->jam_masuk_siswa) {
+            return 'jam_masuk';
+        } elseif ($now >= $setting->jam_pulang_siswa && $now <= $setting->batas_pulang_siswa) {
+            return 'jam_pulang';
+        }
+        return null;
+    }
+
     public function presence(Request $request)
     {
         $setting = Setting::first();
         $mode = $this->getModeByTime($setting);
 
+        $now = Carbon::now()->format('H:i');
+        // Jika di luar jam absensi, tetap proses absen, status_masuk otomatis 'telat'
         if ($mode == 'jam_masuk') {
             $setting->mode = 'clock_in';
+            $status_masuk = ($now > $setting->jam_masuk_siswa) ? 'telat' : 'tepat_waktu';
         } elseif ($mode == 'jam_pulang') {
             $setting->mode = 'clock_out';
+            $status_masuk = null;
         } else {
-            return response()->json(['message' => 'Di luar jam absensi'], 403);
+            // Di luar jam absensi, anggap clock_in dan status_masuk telat
+            $setting->mode = 'clock_in';
+            $status_masuk = 'telat';
         }
 
         // Device
@@ -64,40 +83,6 @@ class PresenceController extends Controller
 
         if (!$device) {
             return "DEVICE_NOT_FOUND";
-        }
-
-        // Mode add_card: daftarkan RFID baru dan langsung presensi
-        if ($device->mode == "add_card") {
-            // Daftarkan RFID baru jika belum ada
-            $rfid = Rfid::firstOrCreate(['code' => $request->rfid]);
-
-            // Cek apakah sudah ada siswa dengan rfid ini
-            $siswa = Siswa::where('rfid_id', $rfid->id)->first();
-            if (!$siswa) {
-                // Jika belum ada, bisa return pesan khusus atau lanjutkan sesuai kebutuhan
-                return "RFID_REGISTERED_BUT_NO_STUDENT";
-            }
-
-            // Langsung proses presensi
-            $presenceData = AbsenSiswa::where([
-                'siswa_id' => $siswa->id,
-                'date' => Carbon::now()->format('Y-m-d')
-            ])->first();
-
-            $data = [
-                'device_id' => $request->device_id,
-                'date' => Carbon::now()->format('Y-m-d'),
-                'status' => 'present',
-            ];
-
-            $data[$setting->mode] = empty($presenceData->{$setting->mode}) ? Carbon::now()->format('H:i:s') : $presenceData->{$setting->mode};
-
-            $presence = AbsenSiswa::updateOrCreate([
-                'siswa_id' => $siswa->id,
-                'tanggal' => Carbon::now()->format('Y-m-d')
-            ], $data);
-
-            return $setting->mode == "clock_in" ? "RFID_REGISTERED_AND_CLOCK_IN" : "RFID_REGISTERED_AND_CLOCK_OUT";
         }
 
         // Cari RFID
@@ -115,20 +100,44 @@ class PresenceController extends Controller
         // Cek data presensi hari ini
         $presenceData = AbsenSiswa::where([
             'siswa_id' => $siswa->id,
-            'date' => Carbon::now()->format('Y-m-d')
+            'tanggal' => Carbon::now()->format('Y-m-d')
         ])->first();
 
+        // Tentukan status presensi
+        $status = $setting->mode == 'clock_in' ? 'absen_masuk' : 'absen_pulang';
+
+        // Tentukan status_masuk
+        if ($setting->mode == 'clock_in') {
+            // Jika jam sekarang lebih dari jam_masuk_siswa, status_masuk = 'telat'
+            $status_masuk = ($now > $setting->jam_masuk_siswa) ? 'telat' : 'tepat_waktu';
+        } else {
+            // clock_out atau mode lain, ambil dari data sebelumnya
+            $status_masuk = $presenceData->status_masuk ?? 'telat';
+        }
+
+        // Siapkan data lengkap
         $data = [
-            'device_id' => $request->device_id,
-            'date' => Carbon::now()->format('Y-m-d'),
-            'status' => 'present',
+            'device_id'     => $request->device_id,
+            'tanggal'       => Carbon::now()->format('Y-m-d'),
+            'status'        => $setting->mode == 'clock_in' ? 'absen_masuk' : 'absen_pulang',
+            'jam_masuk'     => $setting->mode == 'clock_in' ? Carbon::now()->format('H:i:s') : ($presenceData->jam_masuk ?? null),
+            'jam_pulang'    => $setting->mode == 'clock_out' ? Carbon::now()->format('H:i:s') : ($presenceData->jam_pulang ?? null),
+            'status_masuk'  => $status_masuk,
+            'keterangan'    => $presenceData->keterangan ?? null,
         ];
 
-        $data[$setting->mode] = empty($presenceData->{$setting->mode}) ? Carbon::now()->format('H:i:s') : $presenceData->{$setting->mode};
+        // Jika mode clock_out dan sudah ada data absen masuk, update status dan jam_pulang
+        if ($setting->mode == 'clock_out' && $presenceData) {
+            $data['jam_masuk']    = $presenceData->jam_masuk; // tetap pakai jam_masuk lama
+            $data['status_masuk'] = $presenceData->status_masuk;
+            $data['status']       = 'absen_pulang';
+            $data['jam_pulang']   = Carbon::now()->format('H:i:s');
+        }
 
+        // Simpan/update presensi
         $presence = AbsenSiswa::updateOrCreate([
             'siswa_id' => $siswa->id,
-            'tanggal' => Carbon::now()->format('Y-m-d')
+            'tanggal'  => Carbon::now()->format('Y-m-d')
         ], $data);
 
         return $setting->mode == "clock_in" ? "PRESENCE_CLOCK_IN_SAVED" : "PRESENCE_CLOCK_OUT_SAVED";
