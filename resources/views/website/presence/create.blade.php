@@ -108,7 +108,6 @@ $(document).ready(function() {
     }
   }
   $('#status').on('change', toggleJamStatus);
-  // Inisialisasi saat halaman load
   toggleJamStatus();
 });
 </script>

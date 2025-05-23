@@ -20,7 +20,6 @@ class PresenceRequest extends FormRequest
             'keterangan' => 'nullable|string|max:255',
         ];
 
-        // Jika status absen_masuk/absen_pulang, kolom di bawah wajib diisi
         if (in_array($this->status, ['absen_masuk', 'absen_pulang'])) {
             $rules['jam_masuk'] = 'required|date_format:H:i';
             $rules['jam_pulang'] = 'nullable|date_format:H:i';
