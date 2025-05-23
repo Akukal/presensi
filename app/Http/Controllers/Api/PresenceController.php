@@ -68,7 +68,8 @@ class PresenceController extends Controller
 
         // Mode add_card: daftarkan RFID baru dan langsung presensi
         if ($device->mode == "add_card") {
-            $rfid = Rfid::updateOrCreate(['code' => $request->rfid]);
+            // Daftarkan RFID baru jika belum ada
+            $rfid = Rfid::firstOrCreate(['code' => $request->rfid]);
 
             // Cek apakah sudah ada siswa dengan rfid ini
             $siswa = Siswa::where('rfid_id', $rfid->id)->first();
