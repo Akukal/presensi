@@ -4,22 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DataTables;
-use App\Models\Presence;
-use App\Models\Staff;
+use App\Models\AbsenSiswa;
+use App\Models\Siswa;
+use App\Models\Kelas;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Exports\PresenceDateExport;
-use App\Exports\PresenceStaffExport;
-use Excel;
+use App\Exports\AbsenSiswaDateExport;
+use App\Exports\AbsenSiswaRekapExport;
+use App\Exports\DetailAbsensiSiswaExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view presence by date', ['only' => ['reportDate']]);
-        $this->middleware('permission:view presence by staff', ['only' => ['reportStaff']]);
+        $this->middleware('permission:view presence by date', ['only' => [
+            'reportDate',
+            'reportDateDatatable',
+            'reportDateExport'
+        ]]);
     }
 
+    // LAPORAN BY TANGGAL
     public function reportDate()
     {
         return view('website.report.date');
@@ -27,89 +33,289 @@ class ReportController extends Controller
 
     public function reportDateDatatable(Request $request)
     {
-        $prensences = Presence::query();
-        if(isset($request->date) && !empty($request->date)) $prensences->where('date', $request->date);
-        $prensences->with(['staff', 'staff.department', 'staff.position'])->orderBy('date', 'DESC');
-
-        return DataTables::of($prensences)
-            ->addIndexColumn()
-            ->editColumn('clock_out', function($data) {
-                return empty($data->clock_out) ? '-' : $data->clock_out; 
+        $presences = AbsenSiswa::with(['siswa.kelas'])
+            ->when($request->date, function ($query) use ($request) {
+                $query->where('tanggal', $request->date);
             })
+            ->orderBy('tanggal', 'DESC');
+
+        return DataTables::of($presences)
+            ->addIndexColumn()
+            ->addColumn('nis', fn($row) => $row->siswa->nis ?? '-')
+            ->addColumn('nama', fn($row) => $row->siswa->nama ?? '-')
+            ->addColumn('kelas', fn($row) => $row->siswa && $row->siswa->kelas ? $row->siswa->kelas->nama : '-')
+            ->editColumn('jam_pulang', fn($data) => empty($data->jam_pulang) ? '-' : $data->jam_pulang)
+            ->addColumn('tanggal', fn($row) => $row->tanggal ?? '-')
+            ->addColumn('jam_masuk', fn($row) => $row->jam_masuk ?? '-')
+            ->addColumn('status', fn($row) => $row->status ?? '-')
+            ->addColumn('status_masuk', fn($row) => $row->status_masuk ?? '-')
+            ->addColumn('keterangan', fn($row) => $row->keterangan ?? '-')
             ->make(true);
     }
 
     public function reportDateExport(Request $request)
     {
         $date = Carbon::parse($request->date);
-        $prensences = Presence::where('date', $request->date)->with(['staff', 'staff.department', 'staff.position'])->orderBy('date', 'DESC')->get();
+        $presences = AbsenSiswa::where('tanggal', $request->date)
+            ->with(['siswa.kelas'])
+            ->orderBy('tanggal', 'DESC')
+            ->get();
 
-        if($request->submit == "pdf") {
-            $pdf = Pdf::loadView('website.report.report_date_pdf', ['presences' => $prensences, 'date' => $date])->setPaper('a4', 'landscape');
+        if ($request->submit == "pdf") {
+            $pdf = Pdf::loadView('website.report.report_date_pdf', [
+                'presences' => $presences,
+                'date' => $date
+            ])->setPaper('a4', 'landscape');
             return $pdf->stream();
         }
 
-        if($request->submit == "excel") {
-            return Excel::download(new PresenceDateExport($prensences, $date), 'presence_report_'.$date->format('d_F_Y').'.xlsx');
+        if ($request->submit == "excel") {
+            return Excel::download(
+                new AbsenSiswaDateExport($presences, $date),
+                'laporan_absensi_siswa_' . $date->format('d_F_Y') . '.xlsx'
+            );
         }
     }
 
-    public function reportStaff()
+    // LAPORAN BY SISWA (DAFTAR)
+    public function reportStudent()
     {
-        return view('website.report.staff');
+        $kelasList = Kelas::orderBy('nama')->get();
+        return view('website.report.student', compact('kelasList'));
     }
 
-    public function staffDatatable()
+    public function studentDatatable(Request $request)
     {
-        $staff = Staff::with(['department', 'position'])->orderBy('created_at', 'DESC');
-
-        return DataTables::of($staff)
+        $query = Siswa::with('kelas')
+            ->when($request->kelas_id, fn($q) => $q->where('kelas_id', $request->kelas_id));
+        return DataTables::of($query)
             ->addIndexColumn()
-            ->editColumn('gender', function($data) {
-                return $data->gender == 1 ? "<span class='badge badge-success'>Male</span>" : "<span class='badge badge-danger'>Female</span>"; 
+            ->addColumn('kelas', fn($siswa) => $siswa->kelas->nama ?? '-')
+            ->addColumn('gender', function ($siswa) {
+                return $siswa->gender == 1
+                    ? "<span class='badge badge-primary'>Pria</span>"
+                    : "<span class='badge badge-danger'>Wanita</span>";
             })
-            ->addColumn('action', function($data){
-                return '<a href="'.route('reports.staff.presences', $data->id).'" class="btn btn-info btn-sm"><i class="fas fa-th"></i></a>';
+            ->addColumn('nomor_orang_tua', fn($siswa) => $siswa->telepon_wali ?? '-')
+            ->addColumn('aksi', function ($row) {
+                return '<a href="' . route('laporan.siswa.detailpersiswa', $row->id) . '" class="btn btn-info btn-sm"><i class="fa fa-table"></i></a>';
             })
-            ->rawColumns(['action','gender', 'code'])
+            ->rawColumns(['gender', 'aksi'])
             ->make(true);
     }
 
-    public function staffPresence($id)
+    public function studentPresence($id)
     {
-        $staff = Staff::with(['department', 'position'])->find($id);
-        return view('website.report.staff_presence', compact('staff'));
+        $siswa = Siswa::with('kelas')->findOrFail($id);
+        return view('website.report.student_presence', compact('siswa'));
     }
 
-    public function staffPresenceDatatable(Request $request, $id)
+    // REKAP ABSENSI SISWA TANPA SUBKELAS
+    public function rekapAbsensiSiswa()
     {
-        $prensences = Presence::query();
-        if(!empty($request->start_date) && !empty($request->end_date)) $prensences->whereBetween('date', [$request->start_date, $request->end_date]);
-        $prensences->where('staff_id', $id)->orderBy('date', 'DESC');
+        $kelasList = Kelas::orderBy('nama')->get();
+        return view('website.report.rekap_absensi_siswa', compact('kelasList'));
+    }
 
-        return DataTables::of($prensences)
+    public function rekapAbsensiSiswaDatatable(Request $request)
+    {
+        $query = Siswa::with(['kelas', 'absensi'])
+            ->when($request->kelas_id, fn($q) => $q->where('kelas_id', $request->kelas_id));
+
+        return DataTables::of($query)
             ->addIndexColumn()
-            ->editColumn('clock_out', function($data) {
-                return empty($data->clock_out) ? '-' : $data->clock_out; 
+            ->addColumn('kelas', fn($siswa) => $siswa->kelas->nama ?? '-')
+            ->addColumn('masuk', function ($siswa) use ($request) {
+                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
+                    ->where('status', 'absen_masuk')->count();
+            })
+            ->addColumn('telat', function ($siswa) use ($request) {
+                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
+                    ->where('status_masuk', 'telat')->count();
+            })
+            ->addColumn('sakit', function ($siswa) use ($request) {
+                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
+                    ->where('status', 'sakit')->count();
+            })
+            ->addColumn('ijin', function ($siswa) use ($request) {
+                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
+                    ->where('status', 'izin')->count();
+            })
+            ->addColumn('alfa', function ($siswa) use ($request) {
+                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
+                    ->where('status', 'alfa')->count();
             })
             ->make(true);
     }
 
-    public function reportStaffExport(Request $request, $id)
+    public function rekapAbsensiSiswaExport(Request $request)
     {
-        $staff = Staff::with(['department', 'position'])->find($id);
-        $startDate = Carbon::parse($request->start_date);
-        $endDate = Carbon::parse($request->end_date);
-        $prensences = Presence::where('staff_id', $id)->whereBetween('date', [$request->start_date, $request->end_date])->orderBy('date', 'DESC')->get();
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $kelasId = $request->kelas_id;
 
-        if($request->submit == "pdf") {
-            $pdf = Pdf::loadView('website.report.report_staff_pdf', ['presences' => $prensences,'startDate' => $startDate,'endDate' => $endDate,'staff' => $staff])->setPaper('a4', 'landscape');
+        $query = Siswa::with(['kelas', 'absensi'])
+            ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
+        $siswaList = $query->get();
 
-            return $pdf->stream();
+        $rekap = [];
+        foreach ($siswaList as $siswa) {
+            $absensi = $siswa->absensi->whereBetween('tanggal', [$startDate, $endDate]);
+            $rekap[] = [
+                'nis' => $siswa->nis,
+                'nama' => $siswa->nama,
+                'kelas' => $siswa->kelas->nama ?? '-',
+                'masuk' => $absensi->where('status', 'absen_masuk')->count(),
+                'telat' => $absensi->where('status_masuk', 'telat')->count(),
+                'sakit' => $absensi->where('status', 'sakit')->count(),
+                'ijin' => $absensi->where('status', 'izin')->count(),
+                'alfa' => $absensi->where('status', 'alfa')->count(),
+            ];
         }
 
-        if($request->submit == "excel") {
-            return Excel::download(new PresenceStaffExport($prensences, $startDate, $endDate, $staff), 'presence_report_'.$staff->name.'.xlsx');
+        $kelasNama = $kelasId ? (Kelas::find($kelasId)->nama ?? '-') : '-';
+
+        if ($request->submit == 'excel') {
+            return Excel::download(
+                new AbsenSiswaRekapExport($rekap, $kelasNama, $startDate, $endDate),
+                'rekap_absensi_siswa_' . $kelasNama . '_' . date('dMY', strtotime($startDate)) . '_sd_' . date('dMY', strtotime($endDate)) . '.xlsx'
+            );
+        } else {
+            $pdf = Pdf::loadView('website.report.rekap_absensi_siswa_pdf', [
+                'rekap' => $rekap,
+                'kelasNama' => $kelasNama,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ])->setPaper('A4', 'landscape');
+            return $pdf->stream('rekap_absensi_siswa_' . $kelasNama . '_' . date('dMY', strtotime($startDate)) . '_sd_' . date('dMY', strtotime($endDate)) . '.pdf');
+        }
+    }
+
+    // DETAIL ABSENSI SISWA (UNTUK TABEL HORIZONTAL SEMUA SISWA)
+    public function detailAbsensiSiswa(Request $request)
+    {
+        $kelasList = Kelas::orderBy('nama')->get();
+        return view('website.report.detail_absensi_siswa', compact('kelasList'));
+    }
+
+    // AJAX datatable jika pakai datatables di blade utama
+    public function detailAbsensiSiswaDatatable(Request $request)
+    {
+        $bulan = $request->bulan ? Carbon::parse($request->bulan . '-01') : Carbon::now()->startOfMonth();
+        $kelasId = $request->kelas_id;
+
+        $startDate = $bulan->copy()->startOfMonth();
+        $endDate = $bulan->copy()->endOfMonth();
+        $dates = [];
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dates[] = $date->format('Y-m-d');
+        }
+
+        $query = Siswa::with(['kelas', 'absensi' => function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('tanggal', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
+        }])
+            ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
+
+        $data = [];
+        foreach ($query->get() as $siswa) {
+            $row = [
+                'nis' => $siswa->nis,
+                'nama' => $siswa->nama,
+                'kelas' => $siswa->kelas->nama ?? '-',
+            ];
+            foreach ($dates as $tgl) {
+                $absen = optional($siswa->absensi)->firstWhere('tanggal', $tgl);
+                if (!$absen) {
+                    $row[$tgl] = '-';
+                } else {
+                    if ($absen->status == 'absen_masuk' && $absen->status_masuk == 'telat') {
+                        $row[$tgl] = '<span class="badge badge-warning">telat</span>';
+                    } elseif ($absen->status == 'absen_masuk') {
+                        $row[$tgl] = '<span class="badge badge-success">masuk</span>';
+                    } elseif ($absen->status == 'sakit') {
+                        $row[$tgl] = '<span class="badge badge-info">sakit</span>';
+                    } elseif ($absen->status == 'izin') {
+                        $row[$tgl] = '<span class="badge badge-primary">izin</span>';
+                    } elseif ($absen->status == 'alfa') {
+                        $row[$tgl] = '<span class="badge badge-danger">alfa</span>';
+                    } else {
+                        $row[$tgl] = '<span class="badge badge-secondary">' . e($absen->status) . '</span>';
+                    }
+                }
+            }
+            $data[] = $row;
+        }
+
+        return response()->json(['data' => $data]);
+    }
+
+    // EXPORT EXCEL/PDF DETAIL ABSENSI SISWA
+    public function detailAbsensiSiswaExport(Request $request)
+    {
+        $bulan = $request->bulan ? Carbon::parse($request->bulan . '-01') : Carbon::now()->startOfMonth();
+        $kelasId = $request->kelas_id;
+
+        $kelasNama = $kelasId ? (Kelas::find($kelasId)->nama ?? '-') : 'Semua';
+
+        $startDate = $bulan->copy()->startOfMonth();
+        $endDate = $bulan->copy()->endOfMonth();
+
+        $dates = [];
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dates[] = $date->format('Y-m-d');
+        }
+
+        $query = Siswa::with(['kelas', 'absensi' => function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('tanggal', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
+        }])
+            ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
+
+        $rekap = [];
+        foreach ($query->get() as $siswa) {
+            $row = [
+                'nis' => $siswa->nis,
+                'nama' => $siswa->nama,
+                'kelas' => $siswa->kelas->nama ?? '-',
+                'absensi' => [],
+            ];
+            foreach ($dates as $tgl) {
+                $absen = $siswa->absensi->firstWhere('tanggal', $tgl);
+                if (!$absen) {
+                    $row['absensi'][$tgl] = '-';
+                } else {
+                    if ($absen->status == 'absen_masuk' && $absen->status_masuk == 'telat') {
+                        $row['absensi'][$tgl] = 'telat';
+                    } elseif ($absen->status == 'absen_masuk') {
+                        $row['absensi'][$tgl] = 'masuk';
+                    } elseif ($absen->status == 'sakit') {
+                        $row['absensi'][$tgl] = 'sakit';
+                    } elseif ($absen->status == 'izin') {
+                        $row['absensi'][$tgl] = 'izin';
+                    } elseif ($absen->status == 'alfa') {
+                        $row['absensi'][$tgl] = 'alfa';
+                    } else {
+                        $row['absensi'][$tgl] = $absen->status;
+                    }
+                }
+            }
+            $rekap[] = $row;
+        }
+
+        $bulanStr = $bulan->format('Y-m');
+
+        if ($request->submit == 'excel') {
+            return Excel::download(
+                new DetailAbsensiSiswaExport($rekap, $kelasNama, $bulanStr, $dates),
+                'detail_absensi_siswa_' . $kelasNama . '_' . $bulanStr . '.xlsx'
+            );
+        } else {
+            $pdf = Pdf::loadView('website.report.detail_absensi_siswa_pdf', [
+                'rekap' => $rekap,
+                'kelasNama' => $kelasNama,
+                'bulan' => $bulanStr,
+                'dates' => $dates,
+            ])->setPaper('A4', 'landscape');
+            return $pdf->stream('detail_absensi_siswa_' . $kelasNama . '_' . $bulanStr . '.pdf');
         }
     }
 }

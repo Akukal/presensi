@@ -31,8 +31,14 @@ class Siswa extends Model
         return $this->belongsTo(Guru::class);
     }
 
+<<<<<<< HEAD
     public function rfid()
     {
         return $this->belongsTo(Rfid::class);
+=======
+        public function absensi()
+    {
+        return $this->hasMany(\App\Models\AbsenSiswa::class, 'siswa_id', 'id');
+>>>>>>> 85e33089af349be27648927d8eb217fe73ef2db4
     }
 }

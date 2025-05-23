@@ -1,15 +1,32 @@
 <table>
   <tr>
-    <th colspan="10" style="font-size:18px;">Laporan Absensi Siswa By Tanggal</th>
+    <th colspan="8" align="center">Laporan Presensi Siswa</th>
   </tr>
   <tr>
-    <th colspan="10" style="font-size:14px;">Tanggal: {{ $date->format('d F Y') }}</th>
+    <td>NIS</td>
+    <td colspan="7">{{ $siswa->nis }}</td>
+  </tr>
+  <tr>
+    <td>Nama</td>
+    <td colspan="7">{{ $siswa->nama }}</td>
+  </tr>
+  <tr>
+    <td>Jenis Kelamin</td>
+    <td colspan="7">{{ $siswa->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}</td>
+  </tr>
+  <tr>
+    <td>Kelas</td>
+    <td colspan="7">{{ $siswa->kelas->nama }}</td>
+  </tr>
+  <tr>
+    <td>Nomor Orang Tua</td>
+    <td colspan="7">{{ $siswa->nomor_orang_tua }}</td>
+  </tr>
+  <tr>
+    <td colspan="8">&nbsp;</td>
   </tr>
   <tr>
     <th>No</th>
-    <th>NIS</th>
-    <th>Nama</th>
-    <th>Kelas</th>
     <th>Tanggal</th>
     <th>Absen Masuk</th>
     <th>Absen Pulang</th>
@@ -20,9 +37,6 @@
   @foreach ($presences as $index => $presence)
     <tr>
       <td>{{ $index + 1 }}</td>
-      <td>{{ $presence->siswa->nis }}</td>
-      <td>{{ $presence->siswa->nama }}</td>
-      <td>{{ $presence->siswa->kelas->kelas ?? '-' }}</td>
       <td>{{ $presence->tanggal }}</td>
       <td>{{ $presence->jam_masuk }}</td>
       <td>{{ $presence->jam_pulang }}</td>

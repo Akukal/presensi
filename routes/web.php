@@ -65,9 +65,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('reports/date/ajax/datatable', [ReportController::class, 'reportDateDatatable'])->name('reports.date.ajax.datatable');
     Route::get('reports/date/export', [ReportController::class, 'reportDateExport'])->name('reports.date.export');
 
-    Route::get('reports/staff', [ReportController::class, 'reportStaff'])->name('reports.staff');
-    Route::get('reports/staff/ajax/datatable', [ReportController::class, 'staffDatatable'])->name('reports.staff.ajax.datatable');
-    Route::get('reports/staff/{id}/presences', [ReportController::class, 'StaffPresence'])->name('reports.staff.presences');
-    Route::get('reports/staff/{id}/presences/ajax/datatable', [ReportController::class, 'staffPresenceDatatable'])->name('reports.staff.presences.ajax.datatable');
-    Route::get('reports/staff/{id}/presences/export', [ReportController::class, 'reportStaffExport'])->name('reports.staff.export');
+    Route::get('reports/rekap', [ReportController::class, 'rekapAbsensiSiswa'])->name('laporan.siswa.rekap');
+    Route::get('reports/rekap/ajax/datatable', [ReportController::class, 'rekapAbsensiSiswaDatatable'])->name('laporan.siswa.rekap.ajax.datatable');
+    Route::get('reports/rekap/export', [ReportController::class, 'rekapAbsensiSiswaExport'])->name('laporan.siswa.rekap.export');
+
+    Route::get('reports/detail', [ReportController::class, 'detailAbsensiSiswa'])->name('laporan.siswa.detail');
+    Route::get('reports/detail/ajax/datatable', [ReportController::class, 'detailAbsensiSiswaDatatable'])->name('laporan.siswa.detail.ajax.datatable');
+    Route::get('reports/detail/export', [ReportController::class, 'detailAbsensiSiswaExport'])->name('laporan.siswa.detail.export');
+
+    Route::get('reports/student', [ReportController::class, 'reportStudent'])->name('laporan.siswa');
+    Route::get('reports/student/ajax/datatable', [ReportController::class, 'studentDatatable'])->name('laporan.siswa.ajax.datatable');
+    Route::get('reports/student/{id}', [ReportController::class, 'studentPresence'])->name('laporan.siswa.detailpersiswa');
+    Route::get('reports/student/{id}/ajax/datatable', [ReportController::class, 'studentPresenceDatatable'])->name('laporan.siswa.presensi.ajax.datatable');
+    Route::get('reports/student/{id}/export', [ReportController::class, 'reportStudentExport'])->name('laporan.siswa.export');
 });
