@@ -95,7 +95,7 @@ class SiswaController extends Controller
 
     public function datatable()
     {
-        $siswa = Siswa::with(['kelas', 'guru'])->orderBy('created_at', 'DESC');
+        $siswa = Siswa::with(['kelas', 'guru', 'rfid'])->orderBy('created_at', 'DESC');
 
         return DataTables::of($siswa)
             ->addIndexColumn()

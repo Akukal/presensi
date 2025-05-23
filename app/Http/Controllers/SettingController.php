@@ -47,9 +47,9 @@ class SettingController extends Controller
         $now = Carbon::now()->format('H:i');
 
         if ($now >= $setting->mulai_masuk_siswa && $now <= $setting->jam_masuk_siswa) {
-            return 'jam_masuk'; // Mode masuk
+            return 'jam_masuk';
         } elseif ($now >= $setting->jam_pulang_siswa && $now <= $setting->batas_pulang_siswa) {
-            return 'jam_pulang'; // Mode pulang
+            return 'jam_pulang';
         }
         // Default mode jika di luar jam
         return 'none';

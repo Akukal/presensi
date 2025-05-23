@@ -98,7 +98,7 @@ class PresenceController extends Controller
 
         $presence = AbsenSiswa::updateOrCreate([
             'siswa_id' => $siswa->id,
-            'date' => Carbon::now()->format('Y-m-d')
+            'tanggal' => Carbon::now()->format('Y-m-d')
         ], $data);
 
         return $setting->mode == "clock_in" ? "PRESENCE_CLOCK_IN_SAVED" : "PRESENCE_CLOCK_OUT_SAVED";
