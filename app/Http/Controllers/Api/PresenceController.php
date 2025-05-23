@@ -16,13 +16,15 @@ class PresenceController extends Controller
     public function changeMode(Request $request)
     {
         $setting = Setting::first();
-        // Otomatis buat device jika belum ada
+        $deviceCount = Device::count();
+        $deviceName = 'Device_' . ($deviceCount + 1);
+
         $device = Device::firstOrCreate(
             ['id' => $request->device_id],
             [
-                // Tambahkan kolom lain jika perlu, misal:
-                // 'nama' => $request->device_name ?? 'Unknown',
-                // 'mode' => 'reader'
+                'name' => $deviceName,
+                'mode' => 'reader',
+                'is_active' => 1
             ]
         );
 
@@ -64,10 +66,37 @@ class PresenceController extends Controller
             return "DEVICE_NOT_FOUND";
         }
 
-        // Mode add_card: daftarkan RFID baru
+        // Mode add_card: daftarkan RFID baru dan langsung presensi
         if ($device->mode == "add_card") {
-            Rfid::updateOrCreate(['code' => $request->rfid]);
-            return "RFID_REGISTERED";
+            $rfid = Rfid::updateOrCreate(['code' => $request->rfid]);
+
+            // Cek apakah sudah ada siswa dengan rfid ini
+            $siswa = Siswa::where('rfid_id', $rfid->id)->first();
+            if (!$siswa) {
+                // Jika belum ada, bisa return pesan khusus atau lanjutkan sesuai kebutuhan
+                return "RFID_REGISTERED_BUT_NO_STUDENT";
+            }
+
+            // Langsung proses presensi
+            $presenceData = AbsenSiswa::where([
+                'siswa_id' => $siswa->id,
+                'date' => Carbon::now()->format('Y-m-d')
+            ])->first();
+
+            $data = [
+                'device_id' => $request->device_id,
+                'date' => Carbon::now()->format('Y-m-d'),
+                'status' => 'present',
+            ];
+
+            $data[$setting->mode] = empty($presenceData->{$setting->mode}) ? Carbon::now()->format('H:i:s') : $presenceData->{$setting->mode};
+
+            $presence = AbsenSiswa::updateOrCreate([
+                'siswa_id' => $siswa->id,
+                'tanggal' => Carbon::now()->format('Y-m-d')
+            ], $data);
+
+            return $setting->mode == "clock_in" ? "RFID_REGISTERED_AND_CLOCK_IN" : "RFID_REGISTERED_AND_CLOCK_OUT";
         }
 
         // Cari RFID
