@@ -76,7 +76,7 @@ class PresenceController extends Controller
             }
 
             $presenceData = AbsenSiswa::where([
-                'staff_id' => $siswa->id,
+                'siswa_id' => $siswa->id,
                 'date' => Carbon::now()->format('Y-m-d')
             ])->first();
 
