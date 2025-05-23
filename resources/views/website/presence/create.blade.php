@@ -1,9 +1,7 @@
 @extends('website.layouts.app', ['title' => 'Add Presensi Siswa'])
 
 @section('content')
-<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -17,22 +15,17 @@
           </ol>
         </div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
 
-  <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
-          <!-- /.card -->
-          <!-- Horizontal Form -->
           <div class="card">
             <div class="card-header">
               <a href="{{ route('presences.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
             <form class="form-horizontal" method="POST" action="{{ route('presences.store') }}">
               @csrf
               <div class="card-body">
@@ -52,14 +45,6 @@
                   <input type="date" name="tanggal" id="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
                 </div>
                 <div class="form-group">
-                  <label for="jam_masuk">Jam Masuk</label>
-                  <input type="time" name="jam_masuk" id="jam_masuk" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label for="jam_pulang">Jam Pulang</label>
-                  <input type="time" name="jam_pulang" id="jam_pulang" class="form-control">
-                </div>
-                <div class="form-group">
                   <label for="status">Status</label>
                   <select name="status" id="status" class="form-control" required>
                     <option value="absen_masuk">Absen Masuk</option>
@@ -69,34 +54,61 @@
                     <option value="alfa">Alfa</option>
                   </select>
                 </div>
-                <div class="form-group">
-                  <label for="status_masuk">Status Masuk</label>
-                  <select name="status_masuk" id="status_masuk" class="form-control">
-                    <option value="">-</option>
-                    <option value="tepat_waktu">Tepat Waktu</option>
-                    <option value="telat">Telat</option>
-                  </select>
+                <div id="jam-status-group">
+                  <div class="form-group">
+                    <label for="jam_masuk">Jam Masuk</label>
+                    <input type="time" name="jam_masuk" id="jam_masuk" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="jam_pulang">Jam Pulang</label>
+                    <input type="time" name="jam_pulang" id="jam_pulang" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label>Status Masuk</label><br>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="status_masuk" id="tepat_waktu" value="tepat_waktu">
+                      <label class="form-check-label" for="tepat_waktu">Tepat Waktu</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="status_masuk" id="telat" value="telat">
+                      <label class="form-check-label" for="telat">Telat</label>
+                    </div>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="keterangan">Keterangan</label>
                   <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
                 </div>
               </div>
-              <!-- /.card-body -->
               <div class="card-footer">
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
-              <!-- /.card-footer -->
             </form>
           </div>
-          <!-- /.card -->
-
         </div>
       </div>
-      <!-- /.row -->
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
-  <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+  function toggleJamStatus() {
+    let val = $('#status').val();
+    // Sembunyikan jam dan status_masuk jika izin/sakit/alfa
+    if (val == 'izin' || val == 'sakit' || val == 'alfa') {
+      $('#jam-status-group').hide();
+      $('#jam_masuk').val('');
+      $('#jam_pulang').val('');
+      $('input[name="status_masuk"]').prop('checked', false);
+    } else {
+      $('#jam-status-group').show();
+    }
+  }
+  $('#status').on('change', toggleJamStatus);
+  toggleJamStatus();
+});
+</script>
+@endpush
