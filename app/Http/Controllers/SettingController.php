@@ -11,7 +11,7 @@ class SettingController extends Controller
     public function __construct()
     {
         $this->middleware('permission:view setting|edit setting', ['only' => ['index']]);
-        $this->middleware('permission:edit setting', ['only' => ['store']]);
+        $this->middleware('permission:edit setting', ['only' => ['store', 'update']]);
     }
 
     /**
@@ -28,30 +28,32 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-        Setting::updateOrCreate([
-            'id' => $request->id,
-        ], [
-            'secret_key' => $request->new_secret_key ? Setting::quickRandom(16) : $request->secret_key,
-            'mulai_masuk_siswa' => $request->mulai_masuk_siswa,
-            'jam_masuk_siswa' => $request->jam_masuk_siswa,
-            'jam_pulang_siswa' => $request->jam_pulang_siswa,
-            'batas_pulang_siswa' => $request->batas_pulang_siswa,
+        $data = $request->validate([
+            'mulai_masuk_siswa' => 'required',
+            'jam_masuk_siswa' => 'required',
+            'jam_pulang_siswa' => 'required',
+            'batas_pulang_siswa' => 'required',
         ]);
 
-        toastr('Setting Updated Successfully', 'success', 'Setting');
-        return redirect()->route('settings.index');
+        Setting::updateOrCreate(
+            ['id' => 1], // atau key unik lain
+            $data
+        );
+
+        return redirect()->route('settings.index')->with('success', 'Setting berhasil disimpan!');
     }
 
-    public function getModeByTime($setting)
+    public function update(Request $request, $id)
     {
-        $now = Carbon::now()->format('H:i');
+        $data = $request->validate([
+            'mulai_masuk_siswa' => 'required',
+            'jam_masuk_siswa' => 'required',
+            'jam_pulang_siswa' => 'required',
+            'batas_pulang_siswa' => 'required',
+        ]);
 
-        if ($now >= $setting->mulai_masuk_siswa && $now <= $setting->jam_masuk_siswa) {
-            return 'jam_masuk';
-        } elseif ($now >= $setting->jam_pulang_siswa && $now <= $setting->batas_pulang_siswa) {
-            return 'jam_pulang';
-        }
-        // Default mode jika di luar jam
-        return 'none';
+        Setting::where('id', $id)->update($data);
+
+        return redirect()->route('settings.index')->with('success', 'Setting berhasil diupdate!');
     }
 }

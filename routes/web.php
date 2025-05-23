@@ -59,7 +59,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('presences', PresenceController::class)->except('show');
     Route::get('presences/ajax/datatable', [PresenceController::class, 'datatable'])->name('presences.ajax.datatable');
 
-    Route::resource('settings', SettingController::class)->only(['index', 'store']);
+    Route::resource('settings', SettingController::class)->only(['index', 'store', 'update']);
 
     Route::get('reports/date', [ReportController::class, 'reportDate'])->name('reports.date');
     Route::get('reports/date/ajax/datatable', [ReportController::class, 'reportDateDatatable'])->name('reports.date.ajax.datatable');
