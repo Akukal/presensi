@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DataTables;
+use Yajra\DataTables\Facades\DataTables;
 use App\Models\AbsenSiswa;
 use App\Models\Siswa;
 use App\Models\Kelas;
@@ -93,12 +93,12 @@ class ReportController extends Controller
             ->addColumn('kelas', fn($siswa) => $siswa->kelas->nama ?? '-')
             ->addColumn('gender', function ($siswa) {
                 return $siswa->gender == 1
-                    ? "<span class='badge badge-primary'>Pria</span>"
+                    ? "<span class='badge badge-success'>Pria</span>"
                     : "<span class='badge badge-danger'>Wanita</span>";
             })
             ->addColumn('nomor_orang_tua', fn($siswa) => $siswa->telepon_wali ?? '-')
             ->addColumn('aksi', function ($row) {
-                return '<a href="' . route('laporan.siswa.detailpersiswa', $row->id) . '" class="btn btn-info btn-sm"><i class="fa fa-table"></i></a>';
+                return '<a href="' . route('laporan.siswa.detailpersiswa', $row->id) . '" class="btn btn-primary btn-sm text-white font-weight-bold">Detail Siswa</a>';
             })
             ->rawColumns(['gender', 'aksi'])
             ->make(true);
@@ -108,6 +108,49 @@ class ReportController extends Controller
     {
         $siswa = Siswa::with('kelas')->findOrFail($id);
         return view('website.report.student_presence', compact('siswa'));
+    }
+
+    public function studentPresenceDatatable(Request $request, $id)
+    {
+        $query = AbsenSiswa::with(['siswa.kelas'])
+            ->where('siswa_id', $id)
+            ->when($request->start_date && $request->end_date, function($q) use ($request) {
+                $q->whereBetween('tanggal', [$request->start_date, $request->end_date]);
+            })
+            ->orderBy('tanggal', 'DESC');
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->editColumn('tanggal', function($row) {
+                return $row->tanggal ? Carbon::parse($row->tanggal)->format('d-m-Y') : '-';
+            })
+            ->editColumn('jam_masuk', function($row) {
+                return $row->jam_masuk ? Carbon::parse($row->jam_masuk)->format('H:i:s') : '-';
+            })
+            ->editColumn('jam_pulang', function($row) {
+                return $row->jam_pulang ? Carbon::parse($row->jam_pulang)->format('H:i:s') : '-';
+            })
+            ->editColumn('status', function($row) {
+                switch ($row->status) {
+                    case 'absen_masuk':
+                        return 'Absen Masuk';
+                    case 'absen_pulang':
+                        return 'Absen Pulang';
+                    case 'izin':
+                        return 'Izin';
+                    case 'sakit':
+                        return 'Sakit';
+                    case 'alfa':
+                        return 'Alfa';
+                    default:
+                        return '-';
+                }
+            })
+            ->editColumn('status_masuk', function($row) {
+                return $row->status_masuk == 'telat' ? 'Telat' : ($row->status_masuk == 'tepat_waktu' ? 'Tepat Waktu' : '-');
+            })
+            ->rawColumns(['status', 'status_masuk'])
+            ->make(true);
     }
 
     // REKAP ABSENSI SISWA TANPA SUBKELAS
@@ -177,7 +220,7 @@ class ReportController extends Controller
 
         if ($request->submit == 'excel') {
             return Excel::download(
-                new AbsenSiswaRekapExport($rekap, $kelasNama, $startDate, $endDate),
+                new AbsenSiswaRekapExport($rekap, $kelasNama, '-', $startDate, $endDate),
                 'rekap_absensi_siswa_' . $kelasNama . '_' . date('dMY', strtotime($startDate)) . '_sd_' . date('dMY', strtotime($endDate)) . '.xlsx'
             );
         } else {
@@ -229,15 +272,15 @@ class ReportController extends Controller
                     $row[$tgl] = '-';
                 } else {
                     if ($absen->status == 'absen_masuk' && $absen->status_masuk == 'telat') {
-                        $row[$tgl] = '<span class="badge badge-warning">telat</span>';
+                        $row[$tgl] = '<span class="badge badge-warning">Terlambat</span>';
                     } elseif ($absen->status == 'absen_masuk') {
-                        $row[$tgl] = '<span class="badge badge-success">masuk</span>';
+                        $row[$tgl] = '<span class="badge badge-success">Masuk</span>';
                     } elseif ($absen->status == 'sakit') {
-                        $row[$tgl] = '<span class="badge badge-info">sakit</span>';
+                        $row[$tgl] = '<span class="badge badge-info">Sakit</span>';
                     } elseif ($absen->status == 'izin') {
-                        $row[$tgl] = '<span class="badge badge-primary">izin</span>';
+                        $row[$tgl] = '<span class="badge badge-primary">Izin</span>';
                     } elseif ($absen->status == 'alfa') {
-                        $row[$tgl] = '<span class="badge badge-danger">alfa</span>';
+                        $row[$tgl] = '<span class="badge badge-danger">Alfa</span>';
                     } else {
                         $row[$tgl] = '<span class="badge badge-secondary">' . e($absen->status) . '</span>';
                     }

@@ -2,6 +2,13 @@
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <style>
+    .dataTables_length select {
+        padding-right: 18px;
+        margin: 0;
+        font-size: 12px;
+    }
+    </style>
 @endpush
 
 @section('content')
@@ -26,28 +33,28 @@
       <div class="card">
       <div class="card-body pb-0">
         <form id="filter-form" class="form-row align-items-end mb-3">
-        <div class="col-md-3 mb-2">
+        <div class="col-md-2 mb-2">
           <label>Tanggal Awal</label>
           <input type="date" class="form-control" id="start_date" name="start_date">
         </div>
-        <div class="col-md-3 mb-2">
+        <div class="col-md-2 mb-2">
           <label>Tanggal Akhir</label>
           <input type="date" class="form-control" id="end_date" name="end_date">
         </div>
-        <div class="col-md-3 mb-2">
+        <div class="col-md-2 mb-2">
           <label>Kelas</label>
-          <select class="form-control" id="kelas_id" name="kelas_id">
-          <option value="">[Semua Kelas]</option>
+          <select class="form-select" id="kelas_id" name="kelas_id">
+          <option value="">- Semua Kelas -</option>
           @foreach($kelasList as $kelas)
         <option value="{{ $kelas->id }}">{{ $kelas->nama }}</option>
       @endforeach
           </select>
         </div>
         <div class="col-md-3 mb-2 d-flex align-items-end" style="gap: 10px;">
-          <button type="button" class="btn btn-primary w-100" id="btn-search"><i class="fa fa-search"></i></button>
-          <button type="button" class="btn btn-success w-100" id="btn-excel"><i
+          {{-- <button type="button" class="btn btn-primary w-100" id="btn-search"><i class="fa fa-search"></i></button> --}}
+          <button type="button" class="btn btn-success" id="btn-excel"><i
             class="fa fa-file-excel"></i></button>
-          <button type="button" class="btn btn-danger w-100" id="btn-pdf"><i class="fa fa-file-pdf"></i></button>
+          <button type="button" class="btn btn-danger" id="btn-pdf"><i class="fa fa-file-pdf"></i></button>
         </div>
         </form>
       </div>

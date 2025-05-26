@@ -1,5 +1,5 @@
 <!-- filepath: c:\xampp\htdocs\presensi\resources\views\website\setting\index.blade.php -->
-@extends('website.layouts.app', ['title' => 'Setting'])
+@extends('website.layouts.app', ['title' => 'Setelan'])
 
 @section('content')
 <!-- Content Wrapper. Contains page content -->
@@ -9,12 +9,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Setting</h1>
+          <h1>Setelan</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Setting</li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+            <li class="breadcrumb-item active">Setelan</li>
           </ol>
         </div>
       </div>
@@ -68,7 +68,7 @@
               <!-- /.card-body -->
               @can('edit setting')
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Save</button>
+                  <button type="submit" class="btn btn-primary">Atur Jadwal</button>
                 </div>
               @endcan
               <!-- /.card-footer -->

@@ -5,6 +5,13 @@
   <style>
     .badge { font-size: 12px; }
   </style>
+  <style>
+    .dataTables_length select {
+        padding-right: 18px;
+        margin: 0;
+        font-size: 12px;
+    }
+    </style>
 @endpush
 
 @section('content')
@@ -34,14 +41,14 @@
             <div class="col-md-3 mb-2">
               <label>Kelas</label>
               <select class="form-control" id="kelas_id" name="kelas_id">
-                <option value="">Semua</option>
+                <option value="">- Semua Kelas -</option>
                 @foreach($kelasList as $kelas)
                   <option value="{{ $kelas->id }}">{{ $kelas->nama }}</option>
                 @endforeach
               </select>
             </div>
             <div class="col-md-3 mb-2 d-flex align-items-end">
-              <button type="button" class="btn btn-primary mr-2" id="btn-search"><i class="fa fa-search"></i></button>
+              {{-- <button type="button" class="btn btn-primary mr-2" id="btn-search"><i class="fa fa-search"></i></button> --}}
               <button type="button" class="btn btn-success mr-2" id="btn-excel"><i class="fa fa-file-excel"></i></button>
               <button type="button" class="btn btn-danger mr-2" id="btn-pdf"><i class="fa fa-file-pdf"></i></button>
             </div>
@@ -102,26 +109,30 @@ function loadTable() {
   }
 
   $('#datatable').DataTable({
-    processing: true, 
-    serverSide: false,
-    ajax: {
-      url: '{{ route("laporan.siswa.detail.ajax.datatable") }}',
-      data: {
-        bulan: $('#bulan').val(),
-        kelas_id: $('#kelas_id').val(),
-      }
-    },
-    columns: columns,
-    dom: 'Bfrtip',
-    paging: true,
-    searching: true,
-    info: true,
-    ordering: false,
-    scrollX: true
-    // Tidak perlu createdRow, DataTables akan render HTML badge dengan benar
-  });
+  responsive: true,
+  processing: true,
+  serverSide: true,
+  scrollX: true,
+  searching: false,
+  ajax: {
+    url: '{{ route("laporan.siswa.detail.ajax.datatable") }}',
+    data: {
+      bulan: $('#bulan').val(),
+      kelas_id: $('#kelas_id').val(),
+    }
+  },
+  columns: columns,
+  dom: 'Bfrtip',
+  paging: true,
+  searching: false,
+  info: true,
+  ordering: false,
+  scrollX: true,
+  lengthChange: true, // Pastikan ini diaktifkan
+  lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]], // Konfigurasi menu panjang
+  pageLength: 25,
+});
 }
-
 $(document).ready(function() {
   loadTable();
   $('#btn-search, #kelas_id, #bulan').on('click change', function() {

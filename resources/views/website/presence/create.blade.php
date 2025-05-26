@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Add Presensi Siswa'])
+@extends('website.layouts.app', ['title' => 'Tambah Absensi'])
 
 @section('content')
 <div class="content-wrapper">
@@ -6,12 +6,13 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Add Presensi Siswa</h1>
+          <h1>Tambah Absensi</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Add Presensi</li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+            <li class="breadcrumb-item active"><a href="{{ route('presences.index') }}">Absensi</a></li>
+            <li class="breadcrumb-item active">Tambah Absensi</li>
           </ol>
         </div>
       </div>
@@ -24,15 +25,15 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-header">
-              <a href="{{ route('presences.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
+              <a href="{{ route('presences.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Kembali</a>
             </div>
             <form class="form-horizontal" method="POST" action="{{ route('presences.store') }}">
               @csrf
               <div class="card-body">
                 <div class="form-group">
                   <label for="siswa_id">Nama Siswa</label>
-                  <select name="siswa_id" id="siswa_id" class="form-control" required>
-                    <option value="">-- Pilih Siswa --</option>
+                  <select name="siswa_id" id="siswa_id" class="form-select" required>
+                    <option value="" selected disabled>[ Pilih Siswa ]</option>
                     @foreach(\App\Models\Siswa::with('kelas')->get() as $siswa)
                     <option value="{{ $siswa->id }}">
                       {{ $siswa->nama }} ({{ $siswa->kelas->nama ?? '-' }})
@@ -46,7 +47,7 @@
                 </div>
                 <div class="form-group">
                   <label for="status">Status</label>
-                  <select name="status" id="status" class="form-control" required>
+                  <select name="status" id="status" class="form-select" required>
                     <option value="absen_masuk">Absen Masuk</option>
                     <option value="absen_pulang">Absen Pulang</option>
                     <option value="izin">Izin</option>
@@ -71,17 +72,17 @@
                     </div>
                     <div class="form-check form-check-inline">
                       <input class="form-check-input" type="radio" name="status_masuk" id="telat" value="telat">
-                      <label class="form-check-label" for="telat">Telat</label>
+                      <label class="form-check-label" for="telat">Terlambat</label>
                     </div>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="keterangan">Keterangan</label>
-                  <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
+                  <textarea name="keterangan" id="keterangan" class="form-control text-keterangan"></textarea>
                 </div>
               </div>
               <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
               </div>
             </form>
           </div>
@@ -90,6 +91,13 @@
     </div>
   </section>
 </div>
+<style>
+  .text-keterangan {
+    height: 100%;
+    min-height: 20px;
+    max-height: 400px;
+  }
+</style>
 @endsection
 
 @push('scripts')

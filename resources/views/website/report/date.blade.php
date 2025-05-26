@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Absensi Siswa By Tanggal'])
+@extends('website.layouts.app', ['title' => 'Laporan per Tanggal'])
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -10,6 +10,13 @@
       margin-left: 12px;
     }
   </style>
+  <style>
+    .dataTables_length select {
+        padding-right: 18px;
+        margin: 0;
+        font-size: 12px;
+    }
+    </style>
 @endpush
 
 @section('content')
@@ -18,12 +25,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Laporan By Tanggal</h1>
+          <h1>Laporan per Tanggal</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-            <li class="breadcrumb-item active">Laporan By Tanggal</li>
+            <li class="breadcrumb-item active">Laporan per Tanggal</li>
           </ol>
         </div>
       </div>
@@ -31,32 +38,34 @@
   </section>
   <section class="content">
     <div class="container-fluid">
-      <div class="row"><div class="col-12">
+      <div class="row">
+        <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Filter</h3>
+            <div class="form-inline">
+              <label for="filter-kelas" class="mr-3 py-2">Filter</label>
+              <form id="filter-form" class="form-inline">
+                <input type="date" class="form-control mr-2" id="date" name="date" placeholder="Pilih tanggal">
+                @canany(['export excel presence by date', 'export pdf presence by date'])
+                  <input type="hidden" id="export-date" name="date" value="">
+                  <span class="export-btn-group">
+                    @can('export excel presence by date')
+                      <button type="button" class="btn btn-success" id="btn-export-excel" title="Export Excel">
+                        <i class="fa fa-file-excel"></i>
+                      </button>
+                    @endcan
+                    @can('export pdf presence by date')
+                      <button type="button" class="btn btn-danger" id="btn-export-pdf" title="Export PDF">
+                        <i class="fa fa-file-pdf"></i>
+                      </button>
+                    @endcan
+                  </span>
+                @endcanany
+              </form>
+            </div>
           </div>
           <div class="card-body">
-            <form id="filter-form" class="form-inline mb-3" style="gap: 12px;">
-              <input type="date" class="form-control mr-2" id="date" name="date" placeholder="Pilih tanggal">
-              <button type="submit" class="btn btn-primary" title="Tampilkan"><i class="fa fa-filter"></i></button>
-              <span class="mx-2"></span>
-              @canany(['export excel presence by date', 'export pdf presence by date'])
-                <input type="hidden" id="export-date" name="date" value="">
-                <span class="export-btn-group">
-                  @can('export excel presence by date')
-                    <button type="button" class="btn btn-success" id="btn-export-excel" title="Export Excel">
-                      <i class="fa fa-file-excel"></i>
-                    </button>
-                  @endcan
-                  @can('export pdf presence by date')
-                    <button type="button" class="btn btn-danger" id="btn-export-pdf" title="Export PDF">
-                      <i class="fa fa-file-pdf"></i>
-                    </button>
-                  @endcan
-                </span>
-              @endcanany
-            </form>
+            
             <div style="overflow-x: auto;">
               <table id="datatable" class="table table-striped table-bordered table-hover w-100">
                 <thead>
@@ -91,15 +100,10 @@
   $(document).ready(function() {
     loadTable();
 
-    $('#filter-form').on('submit', function(e){
-      e.preventDefault();
-      loadTable();
-    });
-
     $('#date').on('change', function() {
       $('#export-date').val($(this).val());
+      loadTable();
     });
-    $('#export-date').val($('#date').val());
 
     // Export Excel
     $('#btn-export-excel').on('click', function() {

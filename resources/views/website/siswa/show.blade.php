@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Detail Staff'])
+@extends('website.layouts.app', ['title' => 'Detail Siswa'])
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -10,12 +10,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Detail Staff</h1>
+          <h1>Detail Siswa</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Detail Staff</li>
+            <li class="breadcrumb-item active">Detail Siswa</li>
           </ol>
         </div>
       </div>
@@ -29,7 +29,7 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <a href="{{ route('staff.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
+              <a href="{{ route('siswa.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -38,47 +38,47 @@
                     <tr>
                         <th>RFID</th>
                         <td>:</td>
-                        <td>{{ $staff->code }}</td>
+                        <td>{{ $siswa->code }}</td>
                     </tr>
                     <tr>
                         <th>Name</th>
                         <td>:</td>
-                        <td>{{ $staff->name }}</td>
+                        <td>{{ $siswa->name }}</td>
                     </tr>
                     <tr>
                         <th>Departement</th>
                         <td>:</td>
-                        <td>{{ $staff->department->name }}</td>
+                        <td>{{ $siswa->department->name }}</td>
                     </tr>
                     <tr>
                         <th>Position</th>
                         <td>:</td>
-                        <td>{{ $staff->position->name }}</td>
+                        <td>{{ $siswa->position->name }}</td>
                     </tr>
                     <tr>
                         <th>Gender</th>
                         <td>:</td>
-                        <td>{{ $staff->gender == 1 ? "Male" : "Female" }}</td>
+                        <td>{{ $siswa->gender == 1 ? "Male" : "Female" }}</td>
                     </tr>
                     <tr>
                         <th>Birth Of Date</th>
                         <td>:</td>
-                        <td>{{ $staff->birth_of_date }}</td>
+                        <td>{{ $siswa->birth_of_date }}</td>
                     </tr>
                     <tr>
                         <th>Address</th>
                         <td>:</td>
-                        <td>{{ $staff->address }}</td>
+                        <td>{{ $siswa->address }}</td>
                     </tr>
                     <tr>
                         <th>Phone Number</th>
                         <td>:</td>
-                        <td>{{ $staff->phone_number }}</td>
+                        <td>{{ $siswa->phone_number }}</td>
                     </tr>
                     <tr>
                         <th>Start Date</th>
                         <td>:</td>
-                        <td>{{ $staff->start_date }}</td>
+                        <td>{{ $siswa->start_date }}</td>
                     </tr>
                 </tbody>
               </table>

@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Edit Staff'])
+@extends('website.layouts.app', ['title' => 'Edit Siswa'])
 
 @section('content')
 <!-- Content Wrapper. Contains page content -->
@@ -8,12 +8,13 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Edit Staff</h1>
+          <h1>Tambah Siswa</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Edit Staff</li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+            <li class="breadcrumb-item active"><a href="{{ route('siswa.index') }}">Siswa</a></li>
+            <li class="breadcrumb-item active">Edit Siswa</li>
           </ol>
         </div>
       </div>
@@ -29,39 +30,39 @@
           <!-- Horizontal Form -->
           <div class="card">
             <div class="card-header">
-              <a href="{{ route('staff.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
+              <a href="{{ route('siswa.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Kembali</a>
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form class="form-horizontal" method="POST" action="{{ route('staff.update', $staff->id) }}">
+            <form class="form-horizontal" method="POST" action="{{ route('siswa.update', $siswa->id) }}">
               @csrf
               @method('PUT')
               <div class="card-body">
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">RFID</label>
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control @error('code') is-invalid @enderror" placeholder="code" name="code" value="{{ old('code', $staff->code) }}" readonly>
-                      @error('code')
-                        <span class="error invalid-feedback">{{ $message }}</span>
-                      @enderror
-                    </div>
-                  </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Name</label>
+                  <label class="col-sm-2 col-form-label">NIS</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" value="{{ old('name', $staff->name) }}">
-                    @error('name')
+                    <input type="text" class="form-control @error('nis') is-invalid @enderror" placeholder="NIS" name="nis" value="{{ old('nis', $siswa->nis) }}">
+                    @error('nis')
                       <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Gender</label>
+                  <label class="col-sm-2 col-form-label">Nama</label>
                   <div class="col-sm-10">
-                    <select name="gender" class="form-control @error('gender') is-invalid @enderror">
-                      <option value="">[ Select Gender ]</option>
-                      <option value="1" @selected($errors->any() ? (old('gender') == "1") : ($staff->gender == "1"))>Male</option>
-                      <option value="2" @selected($errors->any() ? (old('gender') == "2") : ($staff->gender == "2"))>Female</option>
+                    <input type="text" class="form-control @error('nama') is-invalid @enderror" placeholder="Nama" name="nama" value="{{ old('nama', $siswa->nama) }}">
+                    @error('nama')
+                      <span class="error invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
+                  <div class="col-sm-10">
+                    <select name="gender" class="form-select @error('gender') is-invalid @enderror">
+                      <option value="" selected disabled>[ Pilih Jenis Kelamin ]</option>
+                      <option value="1" @selected(old('gender', $siswa->gender) == "1")>Pria</option>
+                      <option value="2" @selected(old('gender', $siswa->gender) == "2")>Wanita</option>
                     </select>
                     @error('gender')
                       <span class="error invalid-feedback">{{ $message }}</span>
@@ -69,65 +70,24 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Birth Of Date</label>
+                  <label class="col-sm-2 col-form-label">Kelas</label>
                   <div class="col-sm-10">
-                    <input type="date" class="form-control @error('birth_of_date') is-invalid @enderror" placeholder="Birth Of Date" name="birth_of_date" value="{{ old('birth_of_date', $staff->birth_of_date) }}">
-                    @error('birth_of_date')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Department</label>
-                  <div class="col-sm-10">
-                    <select name="department_id" class="form-control @error('department_id') is-invalid @enderror">
-                      <option value="">[ Select Department ]</option>
-                      @foreach($departments as $department)
-                        <option value="{{ $department->id }}" @selected($errors->any() ? (old('department_id') == $department->id) : ($staff->department_id == $department->id))>{{ $department->name }}</option>
+                    <select name="kelas_id" class="form-select @error('kelas_id') is-invalid @enderror">
+                      <option value="" selected disabled>[ Pilih Kelas ]</option>
+                      @foreach($kelas as $k)
+                        <option value="{{ $k->id }}" @selected(old('kelas_id', $siswa->kelas_id) == $k->id)>{{ $k->nama }}</option>
                       @endforeach
                     </select>
-                    @error('department_id')
+                    @error('kelas_id')
                       <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Position</label>
+                  <label class="col-sm-2 col-form-label">Nomor Orang Tua</label>
                   <div class="col-sm-10">
-                    <select name="position_id" class="form-control @error('position_id') is-invalid @enderror">
-                      <option value="">[ Select Position ]</option>
-                      @foreach($positions as $position)
-                      <option value="{{ $position->id }}" @selected($errors->any() ? (old('position_id') == $position->id) : ($staff->position_id == $position->id))>{{ $position->name }}</option>
-                      @endforeach
-                    </select>
-                    @error('position_id')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Address</label>
-                  <div class="col-sm-10">
-                    <textarea name="address" rows="5" class="form-control @error('address') is-invalid @enderror">{{ old('address', $staff->address) }}</textarea>
-                    @error('address')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Phone Number</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control @error('phone_number') is-invalid @enderror" placeholder="Phone Number" name="phone_number" value="{{ old('phone_number', $staff->phone_number) }}">
-                    @error('phone_number')
-                      <span class="error invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Start Date</label>
-                  <div class="col-sm-10">
-                    <input type="date" class="form-control @error('start_date') is-invalid @enderror" placeholder="Start Date" name="start_date" value="{{ old('start_date', $staff->start_date) }}">
-                    @error('start_date')
+                    <input type="text" class="form-control @error('telepon_wali') is-invalid @enderror" placeholder="Nomor Orang Tua" name="telepon_wali" value="{{ old('telepon_wali', $siswa->telepon_wali) }}">
+                    @error('telepon_wali')
                       <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>
@@ -135,7 +95,7 @@
               </div>
               <!-- /.card-body -->
               <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
               </div>
               <!-- /.card-footer -->
             </form>

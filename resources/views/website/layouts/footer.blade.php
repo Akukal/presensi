@@ -1,6 +1,7 @@
 <footer class="main-footer">
   <div class="float-right d-none d-sm-block">
-    <b>Version</b> 1.0
+    {{ config('app.name') }} v{{ env('APP_VERSION') }}
   </div>
-  <strong>Copyright &copy; 2023 Presence App Nodemcu & RFID. All rights reserved.
+  <span>&copy; {{ date('Y') }} Sekolah Prestasi Prima | Developed by FzeeyNa, Akukal, anezacode</span>
+  
 </footer>

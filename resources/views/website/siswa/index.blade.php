@@ -2,7 +2,15 @@
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <style>
+    .dataTables_length select {
+        padding-right: 18px;
+        margin: 0;
+        font-size: 12px;
+    }
+    </style>
 @endpush
+
 @section('content')
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -14,7 +22,7 @@
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
             <li class="breadcrumb-item active">Siswa</li>
           </ol>
         </div>
@@ -30,7 +38,7 @@
           <div class="card">
             @can('create siswa')
               <div class="card-header">
-                <a href="{{ route('siswa.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Create New</a>
+                <a href="{{ route('siswa.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah Data</a>
               </div>
             @endcan
             <div class="card-body" style="overflow-x:auto;">
@@ -40,8 +48,8 @@
                   <th>No</th>
                   <th>NIS</th>
                   <th>Nama</th>
-                  <th>Jenis Kelamin</th>
                   <th>Kelas</th>
+                  <th>Jenis Kelamin</th>
                   <th>Nomor Orang Tua</th>
                   <th>Nomor Wali Kelas</th>
                   <th>RFID</th>
@@ -59,14 +67,14 @@
                     <input type="hidden" name="siswa_id" id="inputSiswaId">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="modalRfidLabel">Pilih RFID</h5>
+                        <h5 class="modal-title" id="modalRfidLabel">RFID</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
                       <div class="modal-body">
-                        <select name="code" class="form-control" required>
-                          <option value="">-- Pilih RFID --</option>
+                        <select name="code" class="form-select" required>
+                          <option value="">[ Pilih RFID ]</option>
                           @foreach($rfids as $rfid)
                             <option value="{{ $rfid->code }}">{{ $rfid->code }}</option>
                           @endforeach
@@ -108,6 +116,7 @@
       processing : true,
       serverSide : true,
       scrollX : true,
+      searching : false,
       ajax : {
         url : '{!! route('siswa.ajax.datatable') !!}',
       },
@@ -115,8 +124,8 @@
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
         {data: 'nis', name: 'nis', orderable: true, searchable: true},
         {data: 'nama', name: 'nama', orderable: true, searchable: true},
-        {data: 'gender', name: 'gender', orderable: true, searchable: true},
         {data: 'kelas_id', name: 'kelas_id', orderable: true, searchable: true},
+        {data: 'gender', name: 'gender', orderable: true, searchable: true},
         {data: 'telepon_wali', name: 'telepon_wali', orderable: true, searchable: true},
         {data: 'guru_telepon', name: 'guru_telepon', orderable: true, searchable: true},
         {data: 'code', name: 'code', orderable: true, searchable: true},
