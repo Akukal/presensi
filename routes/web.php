@@ -7,12 +7,9 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RfidController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UserController;
-use App\Models\TahunAjaran;
 use Illuminate\Support\Facades\Route;
 
 

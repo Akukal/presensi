@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Laporan By Siswa'])
+@extends('website.layouts.app', ['title' => 'Laporan per Kelas'])
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -10,12 +10,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Laporan By Siswa</h1>
+        <h1>Laporan per Kelas</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-        <li class="breadcrumb-item active">Laporan By Siswa</li>
+        <li class="breadcrumb-item active">Laporan per Kelas</li>
         </ol>
       </div>
       </div>

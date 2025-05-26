@@ -96,17 +96,17 @@
             <li class="nav-item">
               <a href="{{ route('reports.date') }}" class="nav-link {{ Route::is('report*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Absensi per Tanggal</p>
+                <p>Laporan per Tanggal</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('laporan.siswa') }}" class="nav-link {{ Route::is('laporan*') ? 'active' : '' }}">
+              <a href="{{ route('laporan.siswa') }}" class="nav-link {{ Route::is('laporan.siswa') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Absensi per Kelas</p>
+                <p>Laporan per Kelas</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('laporan.siswa.rekap') }}" class="nav-link {{ Route::is('laporan.rekap*') ? 'active' : '' }}">
+              <a href="{{ route('laporan.siswa.rekap') }}" class="nav-link {{ Route::is('laporan.siswa.rekap') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Rekap Absensi Siswa</p>
               </a>
