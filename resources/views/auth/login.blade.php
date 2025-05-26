@@ -56,13 +56,13 @@
             <div class="icheck-primary">
               <input type="checkbox" id="remember" name="remember" value="1">
               <label for="remember">
-                Remember Me
+                Ingat Akunku!
               </label>
             </div>
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <button type="submit" class="btn btn-primary btn-block">Masuk</button>
           </div>
           <!-- /.col -->
         </div>

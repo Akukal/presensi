@@ -30,11 +30,6 @@ class UserSeeder extends Seeder
         Permission::create(['name' => 'edit guru']);
         Permission::create(['name' => 'delete guru']);
 
-        Permission::create(['name' => 'view tahunAjaran']);
-        Permission::create(['name' => 'create tahunAjaran']);
-        Permission::create(['name' => 'edit tahunAjaran']);
-        Permission::create(['name' => 'delete tahunAjaran']);
-
         Permission::create(['name' => 'view device']);
         Permission::create(['name' => 'create device']);
         Permission::create(['name' => 'edit device']);
@@ -72,11 +67,23 @@ class UserSeeder extends Seeder
         $adminRole->syncPermissions($permissions);
 
         $admin = User::create([
-            'name' => 'Dede Rusliandi',
+            'name' => 'Admin Sekolah Prestasi Prima',
             'email' => 'admin@mail.com',
             'password' => bcrypt('12345678')
         ]);
 
         $admin->assignRole($adminRole);
+
+        $userRole = Role::create(['name' => 'user']);
+        $viewPermissions = Permission::where('name', 'like', 'view%')->get();
+        $userRole->syncPermissions($viewPermissions);
+
+        $user = User::create([
+            'name' => 'Guru Sekolah Prestasi Prima',
+            'email' => 'user@mail.com',
+            'password' => bcrypt('12345678')
+        ]);
+
+        $user->assignRole($userRole);
     }
 }

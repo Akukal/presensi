@@ -15,7 +15,7 @@ class RfidSeeder extends Seeder
     public function run(): void
     {
         Rfid::create([
-            'code' => '91281212821',
+            'code' => '127208187222',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
