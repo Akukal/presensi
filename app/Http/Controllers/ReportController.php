@@ -162,31 +162,32 @@ class ReportController extends Controller
 
     public function rekapAbsensiSiswaDatatable(Request $request)
     {
-        $query = Siswa::with(['kelas', 'absensi'])
+        $query = Siswa::with(['kelas', 'absensi' => function($q) use ($request) {
+            $q->whereBetween('tanggal', [$request->start_date, $request->end_date]);
+        }])
             ->when($request->kelas_id, fn($q) => $q->where('kelas_id', $request->kelas_id));
 
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('kelas', fn($siswa) => $siswa->kelas->nama ?? '-')
-            ->addColumn('masuk', function ($siswa) use ($request) {
-                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
-                    ->where('status', 'absen_masuk')->count();
+            ->addColumn('masuk', function ($siswa) {
+                return $siswa->absensi->where('status', 'absen_masuk')
+                    ->where('status_masuk', 'tepat_waktu')
+                    ->count();
             })
-            ->addColumn('telat', function ($siswa) use ($request) {
-                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
-                    ->where('status_masuk', 'telat')->count();
+            ->addColumn('telat', function ($siswa) {
+                return $siswa->absensi->where('status', 'absen_masuk')
+                    ->where('status_masuk', 'telat')
+                    ->count();
             })
-            ->addColumn('sakit', function ($siswa) use ($request) {
-                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
-                    ->where('status', 'sakit')->count();
+            ->addColumn('sakit', function ($siswa) {
+                return $siswa->absensi->where('status_masuk', 'sakit')->count();
             })
-            ->addColumn('ijin', function ($siswa) use ($request) {
-                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
-                    ->where('status', 'izin')->count();
+            ->addColumn('ijin', function ($siswa) {
+                return $siswa->absensi->where('status_masuk', 'izin')->count();
             })
-            ->addColumn('alfa', function ($siswa) use ($request) {
-                return $siswa->absensi->whereBetween('tanggal', [$request->start_date, $request->end_date])
-                    ->where('status', 'alfa')->count();
+            ->addColumn('alfa', function ($siswa) {
+                return $siswa->absensi->where('status_masuk', 'alfa')->count();
             })
             ->make(true);
     }
@@ -197,22 +198,27 @@ class ReportController extends Controller
         $endDate = $request->end_date;
         $kelasId = $request->kelas_id;
 
-        $query = Siswa::with(['kelas', 'absensi'])
+        $query = Siswa::with(['kelas', 'absensi' => function($q) use ($startDate, $endDate) {
+            $q->whereBetween('tanggal', [$startDate, $endDate]);
+        }])
             ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
         $siswaList = $query->get();
 
         $rekap = [];
         foreach ($siswaList as $siswa) {
-            $absensi = $siswa->absensi->whereBetween('tanggal', [$startDate, $endDate]);
             $rekap[] = [
                 'nis' => $siswa->nis,
                 'nama' => $siswa->nama,
                 'kelas' => $siswa->kelas->nama ?? '-',
-                'masuk' => $absensi->where('status', 'absen_masuk')->count(),
-                'telat' => $absensi->where('status_masuk', 'telat')->count(),
-                'sakit' => $absensi->where('status', 'sakit')->count(),
-                'ijin' => $absensi->where('status', 'izin')->count(),
-                'alfa' => $absensi->where('status', 'alfa')->count(),
+                'masuk' => $siswa->absensi->where('status', 'absen_masuk')
+                    ->where('status_masuk', 'tepat_waktu')
+                    ->count(),
+                'telat' => $siswa->absensi->where('status', 'absen_masuk')
+                    ->where('status_masuk', 'telat')
+                    ->count(),
+                'sakit' => $siswa->absensi->where('status_masuk', 'sakit')->count(),
+                'ijin' => $siswa->absensi->where('status_masuk', 'izin')->count(),
+                'alfa' => $siswa->absensi->where('status_masuk', 'alfa')->count(),
             ];
         }
 
