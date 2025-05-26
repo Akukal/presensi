@@ -218,7 +218,7 @@
               </div>
             </div>
             <div class="card-body">
-              <canvas id="staffByPosition" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              <canvas id="staffByPosition2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
             </div>
             <!-- /.card-body -->
           </div>
@@ -249,7 +249,7 @@
       }
 
       var staffByDepartmentCanvas = $('#staffByDepartment').get(0).getContext('2d')
-      var donutData        = {
+      var donutData = {
         labels: @json($chartKelasLabel),
         datasets: [
           {
@@ -258,12 +258,11 @@
           }
         ]
       }
-      var donutOptions     = {
+      var donutOptions = {
         maintainAspectRatio : false,
         responsive : true,
       }
       //Create pie or douhnut chart
-      // You can switch between pie and douhnut using the method below.
       new Chart(staffByDepartmentCanvas, {
         type: 'doughnut',
         data: donutData,
@@ -271,7 +270,7 @@
       })
 
       // Chart untuk siswa terlambat
-      var staffByPositionCanvas = $('#staffByPosition').get(0).getContext('2d')
+      var terlambatCanvas = $('#staffByPosition').get(0).getContext('2d')
       var terlambatData = {
         labels: @json($chartKelasLabel),
         datasets: [
@@ -281,14 +280,14 @@
           }
         ]
       }
-      new Chart(staffByPositionCanvas, {
+      new Chart(terlambatCanvas, {
         type: 'doughnut',
         data: terlambatData,
         options: donutOptions
       })
 
       // Chart untuk siswa tidak hadir
-      var tidakHadirCanvas = $('#staffByPosition').get(0).getContext('2d')
+      var tidakHadirCanvas = $('#staffByPosition2').get(0).getContext('2d')
       var tidakHadirData = {
         labels: @json($chartKelasLabel),
         datasets: [
