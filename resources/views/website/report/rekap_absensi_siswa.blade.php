@@ -66,8 +66,8 @@
           <th>NIS</th>
           <th>Nama</th>
           <th>Kelas</th>
-          <th>Masuk</th>
-          <th>Telat</th>
+          <th>Tepat Waktu</th>
+          <th>Terlambat</th>
           <th>Sakit</th>
           <th>Ijin</th>
           <th>Alfa</th>
