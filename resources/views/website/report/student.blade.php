@@ -2,6 +2,13 @@
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <style>
+    .dataTables_length select {
+        padding-right: 18px;
+        margin: 0;
+        font-size: 12px;
+    }
+    </style>
 @endpush
 
 @section('content')
@@ -28,8 +35,8 @@
         <div class="card">
          <div class="card-header">
             <div class="form-inline">
-            <label for="filter-kelas" class="mr-2 py-2">Filter</label>
-            <select name="kelas" id="filter-kelas" class="form-control" style="min-width:180px;">
+            <label for="filter-kelas" class="mr-3 py-2">Filter</label>
+            <select name="kelas" id="filter-kelas" class="form-select col-2">
               <option value="">[ Pilih Kelas ]</option>
               @foreach($kelasList as $kelas)
               <option value="{{ $kelas->id }}">{{ $kelas->nama }}</option>
@@ -78,6 +85,7 @@
       processing: true,
       serverSide: true,
       scrollX: true,
+      searching: false,
       ajax: {
       url: '{!! route('laporan.siswa.ajax.datatable') !!}',
       data: { kelas_id: $('#filter-kelas').val() }

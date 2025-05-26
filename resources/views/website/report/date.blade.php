@@ -36,7 +36,7 @@
         <div class="card">
           <div class="card-header">
             <div class="form-inline">
-              <label for="filter-kelas" class="mr-2 py-2">Filter</label>
+              <label for="filter-kelas" class="mr-3 py-2">Filter</label>
             </div>
           </div>
           <div class="card-body">
