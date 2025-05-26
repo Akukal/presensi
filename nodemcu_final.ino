@@ -153,7 +153,7 @@ void deviceMode()
       return;
     }
     //bisa di rubah sesuai kebutuhan / url api
-    String url = "http://192.168.5.136/presensi/public/api/devices/mode?secret_key=" + secretKey + "&device_id=" + deviceId;
+    String url = "http:// + String(host) + /presensi/public/api/devices/mode?secret_key=" + secretKey + "&device_id=" + deviceId;
     http.begin(client, url.c_str());
 
     int httpResponseCode = http.GET();
@@ -215,7 +215,7 @@ void storePresence(String rfid)
     return;
   }
 //bisa di rubah sesuai kebutuhan / url api
-  String url = "http://192.168.5.136/presensi/public/api/presences/store?secret_key=" + secretKey + "&device_id=" + deviceId + "&rfid=" + rfid;
+  String url = "http:// + String(host) + /presensi/public/api/presences/store?secret_key=" + secretKey + "&device_id=" + deviceId + "&rfid=" + rfid;
   http.begin(client, url.c_str());
 
   int httpResponseCode = http.GET();
