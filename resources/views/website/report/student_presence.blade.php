@@ -4,7 +4,6 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
   <style>
     .dataTables_length select {
-      padding-right: 18px;
       margin: 0;
       font-size: 12px;
     }
@@ -36,7 +35,6 @@
         <div class="card">
           <div class="card-header">
             <a href="{{ route('laporan.siswa') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Kembali</a>
-            <div class="card-title float-right">Detail Siswa</div>
           </div>
           <div class="card-body">
             <table class="table table-striped table-bordered table-hover mb-0">
@@ -59,7 +57,7 @@
                     @endif
                   </td>
                   <td>{{ $siswa->kelas->nama ?? '-' }}</td>
-                  <td>{{ $siswa->nomor_orang_tua }}</td>
+                  <td>{{ $siswa->telepon_wali ?? '-' }}</td>
                 </tr>
               </tbody>
             </table>
@@ -127,10 +125,10 @@ function datatable()
     serverSide: true,
     pageLength: 25,
     lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
-    language: {
-      url: "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json",
-      processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Loading...</span>'
-    },
+    // language: {
+    //   url: "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json",
+    //   processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Loading...</span>'
+    // },
     order: [[1, 'desc']], // Urutkan berdasarkan tanggal terbaru
     ajax: {
       url: link,
@@ -146,12 +144,25 @@ function datatable()
     },
     columns: [
       {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '5%'},
-      {data: 'tanggal', name: 'tanggal', width: '15%'},
-      {data: 'jam_masuk', name: 'jam_masuk', width: '15%'},
-      {data: 'jam_pulang', name: 'jam_pulang', width: '15%'},
-      {data: 'status', name: 'status', width: '15%'},
-      {data: 'status_masuk', name: 'status_masuk', width: '15%'},
-      {data: 'keterangan', name: 'keterangan', width: '20%'},
+      {data: 'tanggal', name: 'tanggal', width: '15%', orderable: true, searchable: true},
+      {data: 'jam_masuk', name: 'jam_masuk', width: '15%', orderable: true, searchable: true},
+      {data: 'jam_pulang', name: 'jam_pulang', width: '15%', orderable: true, searchable: true},
+      {data: 'status', name: 'status', width: '15%', orderable: true, searchable: true},
+      {data: 'status_masuk', name: 'status_masuk', width: '15%', orderable: true, searchable: true},
+      {
+        data: 'keterangan', 
+        name: 'keterangan', 
+        orderable: true, 
+        searchable: true,
+        width: '20%',
+        render: function(data) {
+          if(data == '') {
+            return '-';
+          } else {
+            return data;
+          }
+        }
+      }
     ],
     drawCallback: function() {
       // Tambahkan class untuk styling
