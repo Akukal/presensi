@@ -272,17 +272,15 @@ class ReportController extends Controller
                     $row[$tgl] = '-';
                 } else {
                     if ($absen->status == 'absen_masuk' && $absen->status_masuk == 'telat') {
-                        $row[$tgl] = '<span class="badge badge-warning">Terlambat</span>';
-                    } elseif ($absen->status == 'absen_masuk') {
-                        $row[$tgl] = '<span class="badge badge-success">Masuk</span>';
-                    } elseif ($absen->status == 'sakit') {
-                        $row[$tgl] = '<span class="badge badge-info">Sakit</span>';
-                    } elseif ($absen->status == 'izin') {
-                        $row[$tgl] = '<span class="badge badge-primary">Izin</span>';
-                    } elseif ($absen->status == 'alfa') {
+                        $row[$tgl] = '<span class="badge badge-info">Terlambat</span>';
+                    } elseif ($absen->status_masuk == 'sakit') {
+                        $row[$tgl] = '<span class="badge badge-warning">Sakit</span>';
+                    } elseif ($absen->status_masuk == 'izin') {
+                        $row[$tgl] = '<span class="badge badge-secondary">Izin</span>';
+                    } elseif ($absen->status_masuk == 'alfa') {
                         $row[$tgl] = '<span class="badge badge-danger">Alfa</span>';
                     } else {
-                        $row[$tgl] = '<span class="badge badge-secondary">' . e($absen->status) . '</span>';
+                        $row[$tgl] = '<span class="badge badge-primary">Masuk</span>';
                     }
                 }
             }
