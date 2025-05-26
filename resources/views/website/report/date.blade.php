@@ -10,6 +10,13 @@
       margin-left: 12px;
     }
   </style>
+  <style>
+    .dataTables_length select {
+        padding-right: 18px;
+        margin: 0;
+        font-size: 12px;
+    }
+    </style>
 @endpush
 
 @section('content')
@@ -37,29 +44,28 @@
           <div class="card-header">
             <div class="form-inline">
               <label for="filter-kelas" class="mr-3 py-2">Filter</label>
+              <form id="filter-form" class="form-inline">
+                <input type="date" class="form-control mr-2" id="date" name="date" placeholder="Pilih tanggal">
+                @canany(['export excel presence by date', 'export pdf presence by date'])
+                  <input type="hidden" id="export-date" name="date" value="">
+                  <span class="export-btn-group">
+                    @can('export excel presence by date')
+                      <button type="button" class="btn btn-success" id="btn-export-excel" title="Export Excel">
+                        <i class="fa fa-file-excel"></i>
+                      </button>
+                    @endcan
+                    @can('export pdf presence by date')
+                      <button type="button" class="btn btn-danger" id="btn-export-pdf" title="Export PDF">
+                        <i class="fa fa-file-pdf"></i>
+                      </button>
+                    @endcan
+                  </span>
+                @endcanany
+              </form>
             </div>
           </div>
           <div class="card-body">
-            <form id="filter-form" class="form-inline mb-3" style="gap: 12px;">
-              <input type="date" class="form-control mr-2" id="date" name="date" placeholder="Pilih tanggal">
-              <button type="submit" class="btn btn-primary" title="Tampilkan"><i class="fa fa-filter"></i></button>
-              <span class="mx-2"></span>
-              @canany(['export excel presence by date', 'export pdf presence by date'])
-                <input type="hidden" id="export-date" name="date" value="">
-                <span class="export-btn-group">
-                  @can('export excel presence by date')
-                    <button type="button" class="btn btn-success" id="btn-export-excel" title="Export Excel">
-                      <i class="fa fa-file-excel"></i>
-                    </button>
-                  @endcan
-                  @can('export pdf presence by date')
-                    <button type="button" class="btn btn-danger" id="btn-export-pdf" title="Export PDF">
-                      <i class="fa fa-file-pdf"></i>
-                    </button>
-                  @endcan
-                </span>
-              @endcanany
-            </form>
+            
             <div style="overflow-x: auto;">
               <table id="datatable" class="table table-striped table-bordered table-hover w-100">
                 <thead>
@@ -94,15 +100,10 @@
   $(document).ready(function() {
     loadTable();
 
-    $('#filter-form').on('submit', function(e){
-      e.preventDefault();
-      loadTable();
-    });
-
     $('#date').on('change', function() {
       $('#export-date').val($(this).val());
+      loadTable();
     });
-    $('#export-date').val($('#date').val());
 
     // Export Excel
     $('#btn-export-excel').on('click', function() {

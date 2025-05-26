@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DataTables;
+use Yajra\DataTables\Facades\DataTables;
 use App\Models\AbsenSiswa;
 use App\Models\Siswa;
 use App\Models\Kelas;
@@ -108,6 +108,49 @@ class ReportController extends Controller
     {
         $siswa = Siswa::with('kelas')->findOrFail($id);
         return view('website.report.student_presence', compact('siswa'));
+    }
+
+    public function studentPresenceDatatable(Request $request, $id)
+    {
+        $query = AbsenSiswa::with(['siswa.kelas'])
+            ->where('siswa_id', $id)
+            ->when($request->start_date && $request->end_date, function($q) use ($request) {
+                $q->whereBetween('tanggal', [$request->start_date, $request->end_date]);
+            })
+            ->orderBy('tanggal', 'DESC');
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->editColumn('tanggal', function($row) {
+                return $row->tanggal ? Carbon::parse($row->tanggal)->format('d-m-Y') : '-';
+            })
+            ->editColumn('jam_masuk', function($row) {
+                return $row->jam_masuk ? Carbon::parse($row->jam_masuk)->format('H:i:s') : '-';
+            })
+            ->editColumn('jam_pulang', function($row) {
+                return $row->jam_pulang ? Carbon::parse($row->jam_pulang)->format('H:i:s') : '-';
+            })
+            ->editColumn('status', function($row) {
+                switch ($row->status) {
+                    case 'absen_masuk':
+                        return 'Absen Masuk';
+                    case 'absen_pulang':
+                        return 'Absen Pulang';
+                    case 'izin':
+                        return 'Izin';
+                    case 'sakit':
+                        return 'Sakit';
+                    case 'alfa':
+                        return 'Alfa';
+                    default:
+                        return '-';
+                }
+            })
+            ->editColumn('status_masuk', function($row) {
+                return $row->status_masuk == 'telat' ? 'Telat' : ($row->status_masuk == 'tepat_waktu' ? 'Tepat Waktu' : '-');
+            })
+            ->rawColumns(['status', 'status_masuk'])
+            ->make(true);
     }
 
     // REKAP ABSENSI SISWA TANPA SUBKELAS

@@ -37,7 +37,7 @@
             <div class="form-inline">
             <label for="filter-kelas" class="mr-3 py-2">Filter</label>
             <select name="kelas" id="filter-kelas" class="form-select col-2">
-              <option value="">[ Pilih Kelas ]</option>
+              <option value="">- Semua Kelas -</option>
               @foreach($kelasList as $kelas)
               <option value="{{ $kelas->id }}">{{ $kelas->nama }}</option>
               @endforeach

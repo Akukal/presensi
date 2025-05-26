@@ -2,6 +2,16 @@
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <style>
+    .dataTables_length select {
+      padding-right: 18px;
+      margin: 0;
+      font-size: 12px;
+    }
+    .dataTables_filter input {
+      font-size: 12px;
+    }
+  </style>
 @endpush
 
 @section('content')
@@ -112,31 +122,60 @@ function datatable()
 
   $('#datatable').DataTable().destroy();
   $('#datatable').DataTable({
-    responsive : true,
-    processing : true,
-    serverSide : true,
-    ajax : {
-      url     : link,
-      data: {
-        'start_date': $('#start_date').val(),
-        'end_date': $('#end_date').val(),
+    responsive: true,
+    processing: true,
+    serverSide: true,
+    pageLength: 25,
+    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
+    language: {
+      url: "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json",
+      processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Loading...</span>'
+    },
+    order: [[1, 'desc']], // Urutkan berdasarkan tanggal terbaru
+    ajax: {
+      url: link,
+      type: 'GET',
+      data: function(d) {
+        d.start_date = $('#start_date').val() || '';
+        d.end_date = $('#end_date').val() || '';
+      },
+      error: function (xhr, error, thrown) {
+        console.error('DataTables Ajax Error:', error);
+        alert('Terjadi kesalahan saat memuat data. Silakan coba lagi.');
       }
     },
     columns: [
-      {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-      {data: 'tanggal', name: 'tanggal'},
-      {data: 'jam_masuk', name: 'jam_masuk'},
-      {data: 'jam_pulang', name: 'jam_pulang'},
-      {data: 'status', name: 'status'},
-      {data: 'status_masuk', name: 'status_masuk'},
-      {data: 'keterangan', name: 'keterangan'},
-    ]
+      {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '5%'},
+      {data: 'tanggal', name: 'tanggal', width: '15%'},
+      {data: 'jam_masuk', name: 'jam_masuk', width: '15%'},
+      {data: 'jam_pulang', name: 'jam_pulang', width: '15%'},
+      {data: 'status', name: 'status', width: '15%'},
+      {data: 'status_masuk', name: 'status_masuk', width: '15%'},
+      {data: 'keterangan', name: 'keterangan', width: '20%'},
+    ],
+    drawCallback: function() {
+      // Tambahkan class untuk styling
+      $('.dataTables_wrapper .dataTables_length select').addClass('form-control-sm');
+      $('.dataTables_wrapper .dataTables_filter input').addClass('form-control-sm');
+    }
   });
 }
+
 $(document).ready(function() {
+  // Set tanggal default ke hari ini
+  var today = new Date().toISOString().split('T')[0];
+  $('#start_date').val(today);
+  $('#end_date').val(today);
+  
   datatable();
+  
+  // Gunakan debounce untuk mencegah terlalu banyak request
+  var timeout;
   $('#start_date, #end_date').on('change', function() {
-    datatable();
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+      datatable();
+    }, 500);
   });
 });
 </script>
