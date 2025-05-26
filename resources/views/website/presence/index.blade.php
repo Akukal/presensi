@@ -53,7 +53,7 @@
                   <th>Tanggal</th>
                   <th>Jam Masuk</th>
                   <th>Jam Keluar</th>
-                  <th>Status Masuk</th>
+                  <th>Kehadiran</th>
                 </tr>
                 </thead>
                 <tbody>
