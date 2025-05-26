@@ -8,6 +8,7 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\Staff;
 use App\Models\Device;
+use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Presence;
 use App\Models\Siswa;
@@ -20,8 +21,10 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $today = Carbon::now()->format('Y-m-d');
+        Carbon::setLocale('id'); 
+        $today = Carbon::now()->translatedFormat('d F Y');
         $kelasActivated = Kelas::count();
+        $guruActivated = Guru::count();
         $siswaActivated = Siswa::count();
         $deviceActivated = Device::where('is_active', true)->count();
         $clockInToday = AbsenSiswa::where('tanggal', $today)->whereNotNull('jam_masuk')->count();
@@ -31,7 +34,9 @@ class DashboardController extends Controller
         $chartKelasLabel = Kelas::orderBy('created_at', 'DESC')->pluck('nama');
         
         return view('website.dashboard.index')->with([
+            'today'=> $today,
             'kelasActivated' => $kelasActivated,
+            'guruActivated' => $guruActivated,
             'siswaActivated' => $siswaActivated,
             'deviceActivated' => $deviceActivated,
             'clockInToday' => $clockInToday,

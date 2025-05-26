@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Add Siswa'])
+@extends('website.layouts.app', ['title' => 'Tambah Siswa'])
 
 @section('content')
 <!-- Content Wrapper. Contains page content -->
@@ -8,12 +8,13 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Add Siswa</h1>
+          <h1>Tambah Siswa</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Add Siswa</li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+            <li class="breadcrumb-item active"><a href="{{ route('siswa.index') }}">Siswa</a></li>
+            <li class="breadcrumb-item active">Tambah Siswa</li>
           </ol>
         </div>
       </div>
@@ -29,7 +30,7 @@
           <!-- Horizontal Form -->
           <div class="card">
             <div class="card-header">
-              <a href="{{ route('siswa.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
+              <a href="{{ route('siswa.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Kembali</a>
             </div>
             <!-- /.card-header -->
             <!-- form start -->
@@ -57,8 +58,8 @@
                 <div class="form-group row">
                   <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
                   <div class="col-sm-10">
-                    <select name="gender" class="form-control @error('gender') is-invalid @enderror">
-                      <option value="">[ Pilih Jenis Kelamin ]</option>
+                    <select name="gender" class="form-select @error('gender') is-invalid @enderror">
+                      <option value="" selected disabled>[ Pilih Jenis Kelamin ]</option>
                       <option value="1" @selected(old('gender') == "1")>Pria</option>
                       <option value="2" @selected(old('gender') == "2")>Wanita</option>
                     </select>
@@ -70,8 +71,8 @@
                 <div class="form-group row">
                   <label class="col-sm-2 col-form-label">Kelas</label>
                   <div class="col-sm-10">
-                    <select name="kelas_id" class="form-control @error('kelas_id') is-invalid @enderror">
-                      <option value="">[ Select Kelas ]</option>
+                    <select name="kelas_id" class="form-select @error('kelas_id') is-invalid @enderror">
+                      <option value="" selected disabled>[ Pilih Kelas ]</option>
                       @foreach($kelas as $k)
                         <option value="{{ $k->id }}" @selected(old('kelas_id') == $k->id)>{{ $k->nama }}</option>
                       @endforeach
@@ -82,9 +83,9 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">No. Telepon Wali Murid</label>
+                  <label class="col-sm-2 col-form-label">Nomor Orang Tua</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control @error('telepon_wali') is-invalid @enderror" placeholder="No. Telepon Wali Murid" name="telepon_wali" value="{{ old('telepon_wali') }}">
+                    <input type="text" class="form-control @error('telepon_wali') is-invalid @enderror" placeholder="Nomor Orang Tua" name="telepon_wali" value="{{ old('telepon_wali') }}">
                     @error('telepon_wali')
                       <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -93,7 +94,7 @@
               </div>
               <!-- /.card-body -->
               <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
               </div>
               <!-- /.card-footer -->
             </form>

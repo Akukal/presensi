@@ -1,7 +1,14 @@
-@extends('website.layouts.app', ['title' => 'Departments'])
+@extends('website.layouts.app', ['title' => 'Kelas'])
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <style>
+  .dataTables_length select {
+      padding-right: 18px;
+      margin: 0;
+      font-size: 12px;
+  }
+  </style>
 @endpush
 
 @section('content')
@@ -15,7 +22,7 @@
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
             <li class="breadcrumb-item active">Kelas</li>
           </ol>
         </div>
@@ -31,7 +38,7 @@
           <div class="card">
             @can('create kelas')
               <div class="card-header">
-                <a href="{{ route('kelas.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Create New</a>
+                <a href="{{ route('kelas.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah Kelas</a>
               </div>
             @endcan
             <!-- /.card-header -->
@@ -78,6 +85,8 @@
       responsive    : true,
       processing    : true,
       serverSide    : true,
+      scrollX : true,
+      searching     : false,
       ajax          : {
         url     : '{!! route('kelas.ajax.datatable') !!}',
       },

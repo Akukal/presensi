@@ -19,10 +19,10 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <h1><b>Presence</b>Apps</h1>
+      <h1><b>{{ config('app.name') }}</b></h1>
     </div>
     <div class="card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
+      <p class="login-box-msg">Aplikasi Absensi Sekolah Prestasi Prima</p>
       <form action="{{ route('login') }}" method="post">
         @csrf
         <div class="input-group mb-3">

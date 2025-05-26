@@ -35,9 +35,12 @@ Route::get('/', function () {
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', DashboardController::class)->name('home');
 
-    Route::resource('kelas', KelasController::class)->parameters([
-        'kelas' => 'kelas'
-    ])->except('show');
+    Route::post('/dismiss-welcome-alert', function () {
+        session(['welcome_alert_dismissed' => true]);
+        return response()->json(['success' => true]);
+    })->name('dismiss-welcome-alert');
+
+    Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas'])->except('show');
     Route::get('kelas/ajax/datatable', [KelasController::class, 'datatable'])->name('kelas.ajax.datatable');
 
     Route::resource('rfids', RfidController::class)->only(['index', 'destroy']);
@@ -47,7 +50,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/siswa/daftar-rfid', [ SiswaController::class, 'daftarRfid'])->name('siswa.daftarRfid');
     Route::get('siswa/ajax/datatable', [SiswaController::class, 'datatable'])->name('siswa.ajax.datatable');
 
-    Route::resource('guru', GuruController::class);
+    Route::resource('guru', GuruController::class)->except('show');
     Route::get('guru/ajax/datatable', [GuruController::class, 'datatable'])->name('guru.ajax.datatable');
 
     Route::resource('devices', DeviceController::class)->except('show');

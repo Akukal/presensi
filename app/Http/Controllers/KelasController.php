@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
-use Illuminate\Http\Request;
 use App\Http\Requests\KelasRequest;
 use App\Models\Guru;
-use DataTables;
+use Yajra\DataTables\DataTables;
 
 class KelasController extends Controller
 {

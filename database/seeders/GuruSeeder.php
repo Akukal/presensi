@@ -11,8 +11,8 @@ class GuruSeeder extends Seeder
     {
         Guru::create([
             'id' => '9ef80ccc-ff2f-4f98-b9db-da46b50ef6d4',
-            'nama' => 'Farah Wanodyatama, S.Pd',
-            'telepon' => '81234567890',
+            'nama' => 'Farah Wanodyatama, S.Pd.',
+            'telepon' => '081234567890',
         ]);
     }
 }

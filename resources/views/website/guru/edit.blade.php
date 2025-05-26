@@ -13,6 +13,7 @@
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+            <li class="breadcrumb-item active"><a href="{{ route('guru.index') }}">Guru</a></li>
             <li class="breadcrumb-item active">Edit Guru</li>
           </ol>
         </div>
@@ -29,11 +30,10 @@
           <!-- Horizontal Form -->
           <div class="card">
             <div class="card-header">
-              <a href="{{ route('guru.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back</a>
+              <a href="{{ route('guru.index') }}" class="btn btn-success"><i class="fa fa-chevron-left"></i> Kembali</a>
             </div>
             <!-- /.card-header -->
-            <!-- form start -->
-            {{ dd($guru) }}
+            <!-- form start --> 
             <form class="form-horizontal" method="POST" action="{{ route('guru.update', $guru->id) }}">
               @csrf
               @method('PUT')
@@ -59,7 +59,7 @@
               </div>
               <!-- /.card-body -->
               <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
               </div>
               <!-- /.card-footer -->
             </form>

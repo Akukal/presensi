@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Siswa;
 use App\Models\Rfid;
 use App\Models\Kelas;
-use App\Models\Guru;
 use Illuminate\Http\Request;
 use App\Http\Requests\SiswaRequest;
-use DataTables;
+use Yajra\DataTables\DataTables;
 
 class SiswaController extends Controller
 {
@@ -119,11 +118,11 @@ class SiswaController extends Controller
             ->editColumn('code', function ($s) {
                 return $s->rfid?->code
                     ? e($s->rfid->code)
-                    : '<span class="badge badge-danger"><button type="button" class="btn btn-primary btn-daftar-rfid" data-id="' . $s->id . '" data-toggle="modal" data-target="#modalRfid">Daftar RFID</button></span>';
+                    : '<button type="button" class="btn btn-primary btn-daftar-rfid" data-id="' . $s->id . '" data-toggle="modal" data-target="#modalRfid">Daftar RFID</button>';
             })
             // Action Buttons
             ->addColumn('action', function ($s) {
-                $action = '<a href="' . route('siswa.show', $s->id) . '" class="btn btn-info btn-sm m-1"><i class="fas fa-th"></i></a>';
+                $action = null;
 
                 if (auth()->user()->hasPermissionTo('edit siswa')) {
                     $action .= '<a href="' . route('siswa.edit', $s->id) . '" class="btn btn-warning btn-sm m-1"><i class="fas fa-edit"></i></a>';

@@ -6,13 +6,22 @@
   <!-- Content Header (Page header) -->
   <div class="content-header">
     <div class="container-fluid">
+      @if(!session()->has('welcome_alert_dismissed'))
+      <div class="alert alert-light alert-dismissible fade show" role="alert">
+        Selamat Datang, <strong>@auth{{ Auth::user()->name }}@endauth</strong>.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="dismissWelcomeAlert()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @endif
+
       <div class="row mb-2">
         <div class="col-sm-6">
           <h1 class="m-0">Dashboard</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
           </ol>
         </div><!-- /.col -->
       </div><!-- /.row -->
@@ -20,46 +29,31 @@
   </div>
   <!-- /.content-header -->
 
+  
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
       <!-- Small boxes (Stat box) -->
       <div class="row">
+        <!-- ./col -->
         <div class="col-lg-4 col-6">
           <!-- small card -->
-          <div class="small-box bg-info">
+          <div class="small-box bg-primary">
             <div class="inner">
-              <h3>{{ $kelasActivated }}</h3>
-
-              <p>Departments</p>
+              <p>Jumlah Siswa</p>
+              <h3>{{ $siswaActivated }}</h3>
             </div>
             <div class="icon">
-              <i class="fas fa-star"></i>
+              <i class="fas fa-user-graduate"></i>
             </div>
           </div>
         </div>
-        <!-- ./col -->
         <div class="col-lg-4 col-6">
           <!-- small card -->
           <div class="small-box bg-success">
             <div class="inner">
-              <h3>-</h3>
-
-              <p>Positions</p>
-            </div>
-            <div class="icon">
-              <i class="fas fa-flag"></i>
-            </div>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-4 col-6">
-          <!-- small card -->
-          <div class="small-box bg-warning">
-            <div class="inner">
-              <h3>{{ $siswaActivated }}</h3>
-
-              <p>Siswa</p>
+              <p>Jumlah Guru</p>
+              <h3>{{ $guruActivated }}</h3>
             </div>
             <div class="icon">
               <i class="fas fa-users"></i>
@@ -67,6 +61,37 @@
           </div>
         </div>
         <!-- ./col -->
+        <div class="col-lg-4 col-6">
+          <!-- small card -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              <p>Jumlah Kelas</p>
+              <h3>{{ $kelasActivated }}</h3>
+            </div>
+            <div class="icon">
+              <i class="fas fa-landmark"></i>
+            </div>
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+    </div>
+  </section>
+        
+        <section class="content">
+          <div class="container-fluid">
+            <div class="card card-outline card-secondary m-auto d-block">
+                <p class="px-4 pt-3">Rekap Absensi Siswa Sekolah Prestasi Prima tanggal <span class="font-weight-bold">{{ $today }}</span>.</p>
+            </div>
+          </div>
+        </section>
+
+        <br>
+          <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
         <div class="col-lg-4 col-6">
           <!-- small card -->
           <div class="small-box bg-danger">
@@ -110,6 +135,7 @@
         </div>
         <!-- ./col -->
       </div>
+      
 
       <div class="row">
         <div class="col-md-6">
@@ -165,6 +191,18 @@
 @push('scripts')
   <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
   <script type="text/javascript">
+      function dismissWelcomeAlert() {
+          fetch('{{ route("dismiss-welcome-alert") }}', {
+              method: 'POST',
+              headers: {
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                  'Content-Type': 'application/json'
+              }
+          }).then(() => {
+              $('.alert').alert('close');
+          });
+      }
+
       var staffByDepartmentCanvas = $('#staffByDepartment').get(0).getContext('2d')
       var donutData        = {
         labels: @json($chartKelasLabel),

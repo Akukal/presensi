@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
-use Illuminate\Http\Request;
 use App\Http\Requests\GuruRequest;
-use DataTables;
+use Yajra\DataTables\DataTables;
 
 class GuruController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view guru|create guru|edit guru|delete guru', ['only' => ['index', 'show']]);
+        $this->middleware('permission:view guru|create guru|edit guru|delete guru', ['only' => ['index']]);
         $this->middleware('permission:create guru', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit guru', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete guru', ['only' => ['destroy']]);
@@ -33,11 +32,6 @@ class GuruController extends Controller
         toastr('Guru Created Successfully', 'success', 'Guru');
 
         return redirect()->route('guru.index');
-    }
-
-    public function show(Guru $guru)
-    {
-        return view('website.guru.show', compact('guru'));
     }
 
     public function edit(Guru $guru)
@@ -74,7 +68,7 @@ class GuruController extends Controller
                 return $guru->telepon ? $guru->telepon : "<span class='badge badge-danger'>Nomor Telepon Tidak Terdaftar</span>"; 
             })
             ->addColumn('action', function($guru){
-                $action = '<a href="'.route('guru.show', $guru->id).'" class="btn btn-info btn-sm m-1"><i class="fas fa-th"></i> </a>';
+                $action = null;
 
                 if(auth()->user()->hasPermissionTo('edit guru')) {
                     $action .= '<a href="'.route('guru.edit', $guru->id).'" class="btn btn-warning btn-sm m-1"><i class="fas fa-edit"></i> </a>';
