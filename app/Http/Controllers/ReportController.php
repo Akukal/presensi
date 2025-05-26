@@ -163,7 +163,9 @@ class ReportController extends Controller
     public function rekapAbsensiSiswaDatatable(Request $request)
     {
         $query = Siswa::with(['kelas', 'absensi' => function($q) use ($request) {
-            $q->whereBetween('tanggal', [$request->start_date, $request->end_date]);
+            if ($request->start_date && $request->end_date) {
+                $q->whereBetween('tanggal', [$request->start_date, $request->end_date]);
+            }
         }])
             ->when($request->kelas_id, fn($q) => $q->where('kelas_id', $request->kelas_id));
 
@@ -199,7 +201,9 @@ class ReportController extends Controller
         $kelasId = $request->kelas_id;
 
         $query = Siswa::with(['kelas', 'absensi' => function($q) use ($startDate, $endDate) {
-            $q->whereBetween('tanggal', [$startDate, $endDate]);
+            if ($startDate && $endDate) {
+                $q->whereBetween('tanggal', [$startDate, $endDate]);
+            }
         }])
             ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId));
         $siswaList = $query->get();
