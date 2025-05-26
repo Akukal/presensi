@@ -9,6 +9,7 @@ use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Presence;
 use App\Models\Siswa;
+use App\Models\Setting;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -19,19 +20,43 @@ class DashboardController extends Controller
     public function __invoke(Request $request)
     {
         Carbon::setLocale('id'); 
-        $today = Carbon::now()->translatedFormat('d F Y');
+        $today = Carbon::now()->format('Y-m-d');
+        $todayFormatted = Carbon::now()->translatedFormat('d F Y');
         $kelasActivated = Kelas::count();
         $guruActivated = Guru::count();
         $siswaActivated = Siswa::count();
 
-        $clockInToday = AbsenSiswa::where('tanggal', $today)->whereNotNull('jam_masuk')->get()->count();
-        $clockOutToday = AbsenSiswa::where('tanggal', $today)->whereNotNull('jam_pulang')->count();
+        // Ambil setting jam absen
+        $setting = Setting::first();
+        $jamAbsen = $setting ? Carbon::parse($setting->jam_masuk_siswa) : Carbon::now();
+
+        // Hitung siswa yang hadir (sudah absen masuk)
+        $siswaHadir = AbsenSiswa::where('tanggal', $today)
+            ->where('status', 'absen_masuk')
+            ->count();
+
+        // Hitung siswa yang terlambat
+        $siswaTerlambat = AbsenSiswa::where('tanggal', $today)
+            ->where('status', 'absen_masuk')
+            ->where('status_masuk', 'telat')
+            ->count();
+
+        // Hitung siswa yang tidak hadir
+        // Total siswa - (yang sudah absen + yang izin/sakit)
+        $siswaTidakHadir = $siswaActivated - (
+            AbsenSiswa::where('tanggal', $today)
+                ->whereIn('status', ['absen_masuk', 'izin', 'sakit'])
+                ->count()
+        );
+
+        $clockInToday = AbsenSiswa::where('tanggal', $today)->where('status', 'absen_masuk')->count();
+        $clockOutToday = AbsenSiswa::where('tanggal', $today)->where('status', 'absen_pulang')->count();
         
         $chartKelasCount = Kelas::orderBy('created_at', 'DESC')->withCount('siswa')->pluck('siswa_count');
         $chartKelasLabel = Kelas::orderBy('created_at', 'DESC')->pluck('nama');
         
         return view('website.dashboard.index')->with([
-            'today'=> $today,
+            'today'=> $todayFormatted,
             'kelasActivated' => $kelasActivated,
             'guruActivated' => $guruActivated,
             'siswaActivated' => $siswaActivated,
@@ -39,6 +64,9 @@ class DashboardController extends Controller
             'clockOutToday' => $clockOutToday,
             'chartKelasCount' => $chartKelasCount,
             'chartKelasLabel' => $chartKelasLabel,
+            'siswaHadir' => $siswaHadir,
+            'siswaTerlambat' => $siswaTerlambat,
+            'siswaTidakHadir' => $siswaTidakHadir,
         ]);
     }
 }

@@ -122,12 +122,12 @@
           <!-- small card -->
           <div class="small-box bg-success">
             <div class="inner">
-              <h3></h3>
+              <h3>{{ $siswaHadir }}</h3>
 
               <p>Siswa Hadir</p>
             </div>
             <div class="icon">
-              <i class="fas fa-chart-pie"></i>
+              <i class="fas fa-smile-beam"></i>
             </div>
           </div>
         </div>
@@ -135,12 +135,12 @@
           <!-- small card -->
           <div class="small-box bg-info">
             <div class="inner">
-              <h3></h3>
+              <h3>{{ $siswaTerlambat }}</h3>
 
               <p>Siswa Terlambat</p>
             </div>
             <div class="icon">
-              <i class="fas fa-chart-pie"></i>
+              <i class="fas fa-meh"></i>
             </div>
           </div>
         </div>
@@ -148,12 +148,12 @@
           <!-- small card -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3></h3>
+              <h3>{{ $siswaTidakHadir }}</h3>
 
               <p>Siswa Tidak Hadir</p>
             </div>
             <div class="icon">
-              <i class="fas fa-chart-pie"></i>
+              <i class="fas fa-frown"></i>
             </div>
           </div>
         </div>
