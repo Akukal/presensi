@@ -23,7 +23,7 @@
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('laporan.siswa') }}">Laporan By Siswa</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('laporan.siswa') }}">Laporan per Kelas</a></li>
             <li class="breadcrumb-item active">Laporan per Siswa</li>
           </ol>
         </div>

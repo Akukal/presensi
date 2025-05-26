@@ -98,7 +98,7 @@ class ReportController extends Controller
             })
             ->addColumn('nomor_orang_tua', fn($siswa) => $siswa->telepon_wali ?? '-')
             ->addColumn('aksi', function ($row) {
-                return '<a href="' . route('laporan.siswa.detailpersiswa', $row->id) . '" class="btn btn-info btn-sm"><i class="fa fa-table"></i></a>';
+                return '<a href="' . route('laporan.siswa.detailpersiswa', $row->id) . '" class="btn btn-info btn-sm text-white font-weight-bold">Detail Siswa</a>';
             })
             ->rawColumns(['gender', 'aksi'])
             ->make(true);
@@ -220,7 +220,7 @@ class ReportController extends Controller
 
         if ($request->submit == 'excel') {
             return Excel::download(
-                new AbsenSiswaRekapExport($rekap, $kelasNama, $startDate, $endDate),
+                new AbsenSiswaRekapExport($rekap, $kelasNama, '-', $startDate, $endDate),
                 'rekap_absensi_siswa_' . $kelasNama . '_' . date('dMY', strtotime($startDate)) . '_sd_' . date('dMY', strtotime($endDate)) . '.xlsx'
             );
         } else {
@@ -272,15 +272,15 @@ class ReportController extends Controller
                     $row[$tgl] = '-';
                 } else {
                     if ($absen->status == 'absen_masuk' && $absen->status_masuk == 'telat') {
-                        $row[$tgl] = '<span class="badge badge-warning">telat</span>';
+                        $row[$tgl] = '<span class="badge badge-warning">Terlambat</span>';
                     } elseif ($absen->status == 'absen_masuk') {
-                        $row[$tgl] = '<span class="badge badge-success">masuk</span>';
+                        $row[$tgl] = '<span class="badge badge-success">Masuk</span>';
                     } elseif ($absen->status == 'sakit') {
-                        $row[$tgl] = '<span class="badge badge-info">sakit</span>';
+                        $row[$tgl] = '<span class="badge badge-info">Sakit</span>';
                     } elseif ($absen->status == 'izin') {
-                        $row[$tgl] = '<span class="badge badge-primary">izin</span>';
+                        $row[$tgl] = '<span class="badge badge-primary">Izin</span>';
                     } elseif ($absen->status == 'alfa') {
-                        $row[$tgl] = '<span class="badge badge-danger">alfa</span>';
+                        $row[$tgl] = '<span class="badge badge-danger">Alfa</span>';
                     } else {
                         $row[$tgl] = '<span class="badge badge-secondary">' . e($absen->status) . '</span>';
                     }

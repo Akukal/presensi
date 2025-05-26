@@ -85,7 +85,6 @@
       processing: true,
       serverSide: true,
       scrollX: true,
-      searching: false,
       ajax: {
       url: '{!! route('laporan.siswa.ajax.datatable') !!}',
       data: { kelas_id: $('#filter-kelas').val() }
