@@ -17,10 +17,10 @@ return new class extends Migration
             $table->softDeletes();
             $table->uuid('siswa_id');
             $table->date('tanggal');
-            $table->enum('status', ['tidak_absen_masuk', 'tidak_absen_pulang', 'absen_masuk', 'absen_pulang', 'alfa', 'izin', 'sakit', 'tap_masuk']);
+            $table->enum('status', ['tidak_absen_masuk', 'tidak_absen_pulang', 'absen_masuk', 'absen_pulang']);
             $table->time('jam_masuk')->nullable();
             $table->time('jam_pulang')->nullable();
-            $table->enum('status_masuk', ['telat', 'tepat_waktu'])->nullable();
+            $table->enum('status_masuk', ['telat', 'tepat_waktu', 'sakit', 'izin', 'alfa']);
             $table->text('keterangan')->nullable();
 
             $table->foreign('siswa_id')->references('id')->on('siswas')->onDelete('cascade');

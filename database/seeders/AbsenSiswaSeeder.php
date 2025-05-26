@@ -22,7 +22,7 @@ class AbsenSiswaSeeder extends Seeder
             'status' => 'absen_masuk',
             'jam_masuk' => '07:00:00',
             'status_masuk' => 'tepat_waktu',
-            'keterangan' => 'Hadir tepat waktu'
+            'keterangan' => ''
         ]);
 
         // Siswa 2 - Terlambat
@@ -33,7 +33,7 @@ class AbsenSiswaSeeder extends Seeder
             'status' => 'absen_masuk',
             'jam_masuk' => '08:30:00',
             'status_masuk' => 'telat',
-            'keterangan' => 'Terlambat'
+            'keterangan' => ''
         ]);
 
         // Siswa 3 - Sakit
@@ -41,8 +41,9 @@ class AbsenSiswaSeeder extends Seeder
             'id' => '9ef80d36-1022-482a-9be1-2e03c4e82b82',
             'siswa_id' => $siswa[2]->id,
             'tanggal' => $today,
-            'status' => 'sakit',
-            'keterangan' => 'Sakit'
+            'status' => 'tidak_absen_masuk',
+            'status_masuk' => 'sakit',
+            'keterangan' => ''
         ]);
     }
 } 

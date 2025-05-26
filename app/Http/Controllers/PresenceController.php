@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AbsenSiswa;
 use Illuminate\Http\Request;
-use DataTables;
+use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
 use App\Http\Requests\PresenceRequest;
 
@@ -54,12 +54,10 @@ class PresenceController extends Controller
                         return 'Absen Masuk';
                     case 'absen_pulang':
                         return 'Absen Pulang';
-                    case 'izin':
-                        return 'Izin';
-                    case 'sakit':
-                        return 'Sakit';
-                    case 'alfa':
-                        return 'Alfa';
+                    case 'tidak_absen_masuk':
+                        return 'Tidak Absen Masuk';
+                    case 'tidak_absen_pulang':
+                        return 'Tidak Absen Pulang';
                     default:
                         return '-';
                 }
@@ -74,7 +72,20 @@ class PresenceController extends Controller
                 return $presensi->jam_pulang ? Carbon::parse($presensi->jam_pulang)->format('H:i:s') : '-';
             })
             ->editColumn('status_masuk', function ($presensi) {
-                return $presensi->status_masuk == 'telat' ? 'Telat' : ($presensi->status_masuk == 'tepat_waktu' ? 'Tepat Waktu' : '-');
+                switch ($presensi->status_masuk) {
+                    case 'tepat_waktu':
+                        return 'Tepat Waktu';
+                    case 'telat':
+                        return 'Terlambat';
+                    case 'alfa':
+                        return 'Alfa';
+                    case 'izin':
+                        return 'Izin';
+                    case 'sakit':
+                        return 'Sakit';
+                    default:
+                        return '-';
+                }
             })
             ->rawColumns(['status_masuk', 'status', 'tanggal', 'jam_masuk', 'jam_pulang', 'status_masuk', 'nama', 'kelas'])
             ->make(true);

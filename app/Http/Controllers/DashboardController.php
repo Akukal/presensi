@@ -57,7 +57,8 @@ class DashboardController extends Controller
         $rekapHadirPerKelas = Kelas::withCount(['siswa as hadir_count' => function($query) use ($today) {
             $query->whereHas('absensi', function($q) use ($today) {
                 $q->where('tanggal', $today)
-                  ->where('status', 'absen_masuk');
+                  ->where('status', 'absen_masuk')
+                  ->where('status_masuk', 'tepat_waktu');
             });
         }])->get();
 
