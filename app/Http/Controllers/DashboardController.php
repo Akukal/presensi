@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AbsenSiswa;
 use Illuminate\Http\Request;
-use App\Models\Device;
 use App\Models\Guru;
 use App\Models\Kelas;
-use App\Models\Presence;
 use App\Models\Siswa;
 use App\Models\Setting;
 use Carbon\Carbon;
@@ -55,6 +53,31 @@ class DashboardController extends Controller
         $chartKelasCount = Kelas::orderBy('created_at', 'DESC')->withCount('siswa')->pluck('siswa_count');
         $chartKelasLabel = Kelas::orderBy('created_at', 'DESC')->pluck('nama');
         
+        // Rekap Siswa Hadir per Kelas
+        $rekapHadirPerKelas = Kelas::withCount(['siswa as hadir_count' => function($query) use ($today) {
+            $query->whereHas('absensi', function($q) use ($today) {
+                $q->where('tanggal', $today)
+                  ->where('status', 'absen_masuk');
+            });
+        }])->get();
+
+        // Rekap Siswa Terlambat per Kelas
+        $rekapTerlambatPerKelas = Kelas::withCount(['siswa as terlambat_count' => function($query) use ($today) {
+            $query->whereHas('absensi', function($q) use ($today) {
+                $q->where('tanggal', $today)
+                  ->where('status', 'absen_masuk')
+                  ->where('status_masuk', 'telat');
+            });
+        }])->get();
+
+        // Rekap Siswa Tidak Hadir per Kelas
+        $rekapTidakHadirPerKelas = Kelas::withCount(['siswa as tidak_hadir_count' => function($query) use ($today) {
+            $query->whereDoesntHave('absensi', function($q) use ($today) {
+                $q->where('tanggal', $today)
+                  ->whereIn('status', ['absen_masuk', 'izin', 'sakit']);
+            });
+        }])->get();
+        
         return view('website.dashboard.index')->with([
             'today'=> $todayFormatted,
             'kelasActivated' => $kelasActivated,
@@ -67,6 +90,9 @@ class DashboardController extends Controller
             'siswaHadir' => $siswaHadir,
             'siswaTerlambat' => $siswaTerlambat,
             'siswaTidakHadir' => $siswaTidakHadir,
+            'rekapHadirPerKelas' => $rekapHadirPerKelas,
+            'rekapTerlambatPerKelas' => $rekapTerlambatPerKelas,
+            'rekapTidakHadirPerKelas' => $rekapTidakHadirPerKelas,
         ]);
     }
 }

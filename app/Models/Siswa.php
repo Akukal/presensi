@@ -36,7 +36,12 @@ class Siswa extends Model
         return $this->belongsTo(Rfid::class);
     }
 
-        public function absensi()
+    public function absensi()
+    {
+        return $this->hasMany(AbsenSiswa::class, 'siswa_id', 'id');
+    }
+
+    public function absenSiswa()
     {
         return $this->hasMany(AbsenSiswa::class, 'siswa_id', 'id');
     }

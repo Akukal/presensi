@@ -161,10 +161,10 @@
       
 
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="card card-success">
             <div class="card-header">
-              <h3 class="card-title">Number Of Staff By Department</h3>
+              <h3 class="card-title">Rekapitulasi Siswa Hadir per Kelas</h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -182,10 +182,10 @@
           </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="card card-info">
             <div class="card-header">
-              <h3 class="card-title">Number Of Staff By Position</h3>
+              <h3 class="card-title">Rekapitulasi Siswa Terlambat per Kelas</h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -202,6 +202,28 @@
             <!-- /.card-body -->
           </div>
         </div>
+
+        <div class="col-md-4">
+          <div class="card card-warning">
+            <div class="card-header">
+              <h3 class="card-title">Rekapitulasi Siswa Tidak Hadir per Kelas</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <canvas id="staffByPosition" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+
       </div>
       <!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -231,7 +253,7 @@
         labels: @json($chartKelasLabel),
         datasets: [
           {
-            data: @json($chartKelasCount),
+            data: @json($rekapHadirPerKelas->pluck('hadir_count')),
             backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
           }
         ]
@@ -242,9 +264,43 @@
       }
       //Create pie or douhnut chart
       // You can switch between pie and douhnut using the method below.
-      new Chart(siswaByKelasCanvas, {
+      new Chart(staffByDepartmentCanvas, {
         type: 'doughnut',
         data: donutData,
+        options: donutOptions
+      })
+
+      // Chart untuk siswa terlambat
+      var staffByPositionCanvas = $('#staffByPosition').get(0).getContext('2d')
+      var terlambatData = {
+        labels: @json($chartKelasLabel),
+        datasets: [
+          {
+            data: @json($rekapTerlambatPerKelas->pluck('terlambat_count')),
+            backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+          }
+        ]
+      }
+      new Chart(staffByPositionCanvas, {
+        type: 'doughnut',
+        data: terlambatData,
+        options: donutOptions
+      })
+
+      // Chart untuk siswa tidak hadir
+      var tidakHadirCanvas = $('#staffByPosition').get(0).getContext('2d')
+      var tidakHadirData = {
+        labels: @json($chartKelasLabel),
+        datasets: [
+          {
+            data: @json($rekapTidakHadirPerKelas->pluck('tidak_hadir_count')),
+            backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+          }
+        ]
+      }
+      new Chart(tidakHadirCanvas, {
+        type: 'doughnut',
+        data: tidakHadirData,
         options: donutOptions
       })
   </script>
