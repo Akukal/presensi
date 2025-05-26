@@ -31,8 +31,8 @@
               @csrf
               <div class="card-body">
                 <div class="form-group">
-                  <label for="siswa_id">Nama Siswa</label>
-                  <select name="siswa_id" id="siswa_id" class="form-select" required>
+                  <label for="siswa_id" class="font-weight-bold">Nama Siswa</label>
+                  <select name="siswa_id" id="siswa_id" class="form-control siswa-select" required>
                     <option value="" selected disabled>[ Pilih Siswa ]</option>
                     @foreach(\App\Models\Siswa::with('kelas')->get() as $siswa)
                     <option value="{{ $siswa->id }}">
@@ -47,7 +47,7 @@
                 </div>
                 <div class="form-group">
                   <label for="status">Status</label>
-                  <select name="status" id="status" class="form-select" required>
+                  <select name="status" id="status" class="form-control" required>
                     <option value="absen_masuk">Absen Masuk</option>
                     <option value="absen_pulang">Absen Pulang</option>
                     <option value="izin">Izin</option>
@@ -97,12 +97,37 @@
     min-height: 20px;
     max-height: 400px;
   }
+  /* Agar Select2 tampak rapi pada Bootstrap */
+  .select2-container .select2-selection--single {
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+  }
+  .select2-selection__arrow {
+    height: 36px !important;
+    margin-top: 1px;
+  }
 </style>
 @endsection
 
+@push('styles')
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
+
 @push('scripts')
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function() {
+  // Inisialisasi Select2 pada select siswa
+  $('.siswa-select').select2({
+    placeholder: "[ Pilih Siswa ]",
+    allowClear: true,
+    width: '100%'
+  });
+
   function toggleJamStatus() {
     let val = $('#status').val();
     // Sembunyikan jam dan status_masuk jika izin/sakit/alfa
