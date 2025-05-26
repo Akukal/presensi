@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\AbsenSiswa;
 use Illuminate\Http\Request;
-use App\Models\Department;
-use App\Models\Position;
-use App\Models\Staff;
 use App\Models\Device;
 use App\Models\Guru;
 use App\Models\Kelas;
@@ -26,8 +23,8 @@ class DashboardController extends Controller
         $kelasActivated = Kelas::count();
         $guruActivated = Guru::count();
         $siswaActivated = Siswa::count();
-        $deviceActivated = Device::where('is_active', true)->count();
-        $clockInToday = AbsenSiswa::where('tanggal', $today)->whereNotNull('jam_masuk')->count();
+
+        $clockInToday = AbsenSiswa::where('tanggal', $today)->whereNotNull('jam_masuk')->get()->count();
         $clockOutToday = AbsenSiswa::where('tanggal', $today)->whereNotNull('jam_pulang')->count();
         
         $chartKelasCount = Kelas::orderBy('created_at', 'DESC')->withCount('siswa')->pluck('siswa_count');
@@ -38,7 +35,6 @@ class DashboardController extends Controller
             'kelasActivated' => $kelasActivated,
             'guruActivated' => $guruActivated,
             'siswaActivated' => $siswaActivated,
-            'deviceActivated' => $deviceActivated,
             'clockInToday' => $clockInToday,
             'clockOutToday' => $clockOutToday,
             'chartKelasCount' => $chartKelasCount,

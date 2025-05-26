@@ -96,9 +96,8 @@
           <!-- small card -->
           <div class="small-box bg-primary">
             <div class="inner">
+              <p>Jumlah Siswa Absen Masuk Hari Ini</p>
               <h3>{{ $clockInToday }}</h3>
-
-              <p>Clock In Today</p>
             </div>
             <div class="icon">
               <i class="fas fa-clock"></i>
@@ -110,9 +109,8 @@
           <!-- small card -->
           <div class="small-box bg-danger">
             <div class="inner">
+              <p>Jumlah Siswa Absen Pulang Hari Ini</p>
               <h3>{{ $clockOutToday }}</h3>
-
-              <p>Clock Out Today</p>
             </div>
             <div class="icon">
               <i class="fas fa-clock"></i>
@@ -122,11 +120,37 @@
         <!-- ./col -->
         <div class="col-lg-4 col-6">
           <!-- small card -->
-          <div class="small-box bg-danger">
+          <div class="small-box bg-success">
             <div class="inner">
-              <h3>{{ $deviceActivated }}</h3>
+              <h3></h3>
 
-              <p>Devices</p>
+              <p>Siswa Hadir</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-6">
+          <!-- small card -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h3></h3>
+
+              <p>Siswa Terlambat</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-6">
+          <!-- small card -->
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3></h3>
+
+              <p>Siswa Tidak Hadir</p>
             </div>
             <div class="icon">
               <i class="fas fa-chart-pie"></i>
