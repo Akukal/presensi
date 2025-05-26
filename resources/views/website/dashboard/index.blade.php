@@ -78,35 +78,21 @@
     </div>
   </section>
         
-        <section class="content">
-          <div class="container-fluid">
-            <div class="card card-outline card-secondary m-auto d-block">
-                <p class="px-4 pt-3">Rekap Absensi Siswa Sekolah Prestasi Prima tanggal <span class="font-weight-bold">{{ $today }}</span>.</p>
-            </div>
-          </div>
-        </section>
-
-        <br>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-outline card-secondary m-auto d-block">
+          <p class="px-4 pt-3">Rekap Absensi Siswa Sekolah Prestasi Prima tanggal <span class="font-weight-bold">{{ $today }}</span>.</p>
+      </div>
+    </div>
+  </section>
+  <br>
           <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
       <!-- Small boxes (Stat box) -->
       <div class="row">
-        <div class="col-lg-4 col-6">
-          <!-- small card -->
-          <div class="small-box bg-danger">
-            <div class="inner">
-              <h3>{{ $deviceActivated }}</h3>
-
-              <p>Devices</p>
-            </div>
-            <div class="icon">
-              <i class="fas fa-chart-pie"></i>
-            </div>
-          </div>
-        </div>
         <!-- ./col -->
-        <div class="col-lg-4 col-6">
+        <div class="col-lg-6 col-6">
           <!-- small card -->
           <div class="small-box bg-primary">
             <div class="inner">
@@ -120,7 +106,7 @@
           </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-4 col-6">
+        <div class="col-lg-6 col-6">
           <!-- small card -->
           <div class="small-box bg-danger">
             <div class="inner">
@@ -134,6 +120,19 @@
           </div>
         </div>
         <!-- ./col -->
+        <div class="col-lg-4 col-6">
+          <!-- small card -->
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3>{{ $deviceActivated }}</h3>
+
+              <p>Devices</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+          </div>
+        </div>
       </div>
       
 

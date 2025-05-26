@@ -91,11 +91,11 @@
         url     : '{!! route('kelas.ajax.datatable') !!}',
       },
       columns       : [
-        {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-        {data: 'nama', name: 'nama', orderable: true, searchable: true},                    
-        {data: 'guru_nama', name: 'guru_nama', orderable: true, searchable: true},
-        {data: 'guru_telepon', name: 'guru_telepon', orderable: true, searchable: true},
-        {data: 'action', name: 'action', orderable: false, searchable: false}
+        {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '5%'},
+        {data: 'nama', name: 'nama', orderable: true, searchable: true, width: '20%'},                    
+        {data: 'guru_nama', name: 'guru_nama', orderable: true, searchable: true, width: '20%'},
+        {data: 'guru_telepon', name: 'guru_telepon', orderable: true, searchable: true, width: '20%'},
+        {data: 'action', name: 'action', orderable: false, searchable: false, width: '5%'}
       ]
     });
   });
