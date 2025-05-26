@@ -13,7 +13,7 @@
       <a href="{{ route('presences.index') }}" class="nav-link">Absensi Siswa</a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
-      <a href="{{ route('presences.index') }}" class="nav-link">Laporan Absen</a>
+      <a href="{{ route('reports.date') }}" class="nav-link">Laporan Absen</a>
     </li>
   </ul>
 
