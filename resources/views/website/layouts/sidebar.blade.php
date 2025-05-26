@@ -137,11 +137,16 @@
             @endcan
             @can(['view user', 'create user', 'edit user', 'delete user'])
             <li class="nav-item"><a href="{{ route('users.index') }}" class="nav-link {{ Route::is('users*') ? 'active' : '' }}"><i class="far fa-circle nav-icon"></i><p>Users</p></a></li>
-            {{-- <li class="nav-item"><a href="{{ route('settings.index') }}" class="nav-link"><i class="far fa-circle nav-icon"></i><p>WhatsApp</p></a></li> --}}
             @endcan
           </ul>
         </li>
         @endcanany
+        <li class="nav-item">
+          <a href="/" class="nav-link">
+            <i class="nav-icon fas fa-comment"></i>
+            <p>WhatsApp</p>
+          </a>
+        </li>
 
         <!-- RFID -->
         @can(['view rfid', 'delete rfid'])
@@ -152,6 +157,7 @@
           </a>
         </li>
         @endcan
+
 
         <!-- Logout -->
         <li class="nav-item">
