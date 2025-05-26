@@ -31,10 +31,13 @@
   </section>
   <section class="content">
     <div class="container-fluid">
-      <div class="row"><div class="col-12">
+      <div class="row">
+        <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <label for="filter-kelas" class="mr-2">Filter</label>
+            <div class="form-inline">
+              <label for="filter-kelas" class="mr-2 py-2">Filter</label>
+            </div>
           </div>
           <div class="card-body">
             <form id="filter-form" class="form-inline mb-3" style="gap: 12px;">

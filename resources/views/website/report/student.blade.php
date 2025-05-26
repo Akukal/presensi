@@ -26,15 +26,15 @@
       <div class="row">
       <div class="col-12">
         <div class="card">
-        <div class="card-header">
-          <div class="form-inline">
-          <label for="filter-kelas" class="mr-2">Filter</label>
-          <select name="kelas" id="filter-kelas" class="form-control" style="min-width:180px;">
-            <option value="">-- Pilih Kelas --</option>
-            @foreach($kelasList as $kelas)
-        <option value="{{ $kelas->id }}">{{ $kelas->nama }}</option>
-        @endforeach
-          </select>
+         <div class="card-header">
+            <div class="form-inline">
+            <label for="filter-kelas" class="mr-2 py-2">Filter</label>
+            <select name="kelas" id="filter-kelas" class="form-control" style="min-width:180px;">
+              <option value="">[ Pilih Kelas ]</option>
+              @foreach($kelasList as $kelas)
+              <option value="{{ $kelas->id }}">{{ $kelas->nama }}</option>
+              @endforeach
+            </select>
           </div>
         </div>
         <div class="card-body" style="overflow-x:auto;">
