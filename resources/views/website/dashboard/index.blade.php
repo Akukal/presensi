@@ -164,7 +164,7 @@
         <div class="col-md-4">
           <div class="card card-success">
             <div class="card-header">
-              <h3 class="card-title">Rekapitulasi Siswa Hadir per Kelas</h3>
+              <h3 class="card-title">Rekap Siswa Hadir per Kelas</h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -185,7 +185,7 @@
         <div class="col-md-4">
           <div class="card card-info">
             <div class="card-header">
-              <h3 class="card-title">Rekapitulasi Siswa Terlambat per Kelas</h3>
+              <h3 class="card-title">Rekap Siswa Terlambat per Kelas</h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -206,7 +206,7 @@
         <div class="col-md-4">
           <div class="card card-warning">
             <div class="card-header">
-              <h3 class="card-title">Rekapitulasi Siswa Tidak Hadir per Kelas</h3>
+              <h3 class="card-title">Rekap Siswa Tidak Hadir per Kelas</h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
