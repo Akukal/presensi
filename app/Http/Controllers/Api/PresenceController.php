@@ -85,6 +85,19 @@ class PresenceController extends Controller
             return "DEVICE_NOT_FOUND";
         }
 
+        // Jika mode device add_card, tambahkan RFID baru jika belum ada
+        if ($device->mode == 'add_card') {
+            $rfid = Rfid::where('code', $request->rfid)->first();
+            if ($rfid) {
+                return "RFID_REGISTERED";
+            } else {
+                Rfid::create([
+                    'code' => $request->rfid
+                ]);
+                return "RFID_ADDED";
+            }
+        }
+
         // Cari RFID
         $rfid = Rfid::where('code', $request->rfid)->first();
         if (!$rfid) {
@@ -139,6 +152,45 @@ class PresenceController extends Controller
             'siswa_id' => $siswa->id,
             'tanggal'  => Carbon::now()->format('Y-m-d')
         ], $data);
+
+        // Kirim WhatsApp ke wali murid jika clock in atau clock out
+        try {
+            $apiKey = env('WABLAS_API_KEY'); // Ganti dengan token Wablas Anda
+            $secretKey = env('WABLAS_SECRET_KEY'); // Ganti dengan secret key Wablas
+            $phone = $siswa->telepon_wali; // Pastikan field ini ada di tabel siswa
+            $nama = $siswa->nama;
+            $jam = Carbon::now()->format('H:i:s');
+            $statusText = $setting->mode == "clock_in" ? "masuk" : "pulang";
+            $message = "Informasi: *$nama* telah $statusText pada $jam. Terima kasih.";
+
+            if ($phone) {
+                $curl = curl_init();
+                $token = $apiKey; // Ganti dengan token Wablas
+                $secret_key = $secretKey; // Ganti dengan secret key Wablas
+                $data = [
+                    'phone' => $phone,
+                    'message' => $message,
+                ];
+                curl_setopt(
+                    $curl,
+                    CURLOPT_HTTPHEADER,
+                    array(
+                        "Authorization: $token.$secret_key",
+                    )
+                );
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+                curl_setopt($curl, CURLOPT_URL,  "https://bdg.wablas.com/api/send-message");
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+                $result = curl_exec($curl);
+                curl_close($curl);
+                // Optional: log response if needed
+            }
+        } catch (\Exception $e) {
+            // Optional: log error
+        }
 
         return $setting->mode == "clock_in" ? "PRESENCE_CLOCK_IN_SAVED" : "PRESENCE_CLOCK_OUT_SAVED";
     }

@@ -21,9 +21,9 @@ class PresenceRequest extends FormRequest
         ];
 
         if (in_array($this->status, ['absen_masuk', 'absen_pulang'])) {
-            $rules['jam_masuk'] = 'required|date_format:H:i';
+            $rules['jam_masuk'] = 'nullable|date_format:H:i';
             $rules['jam_pulang'] = 'nullable|date_format:H:i';
-            $rules['status_masuk'] = 'required|in:telat,tepat_waktu';
+            $rules['status_masuk'] = 'nullable|in:telat,tepat_waktu';
         }
 
         return $rules;
