@@ -101,9 +101,9 @@
       },
       columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-      { data: 'nis', name: 'nis' },
-      { data: 'nama', name: 'nama' },
-      { data: 'kelas', name: 'kelas' },
+      { data: 'nis', name: 'nis', orderable: true, searchable: true  },
+      { data: 'nama', name: 'nama', orderable: true, searchable: true },
+      { data: 'kelas', name: 'kelas', orderable: true, searchable: true, },
       { data: 'masuk', name: 'masuk' },
       { data: 'telat', name: 'telat' },
       { data: 'sakit', name: 'sakit' },
