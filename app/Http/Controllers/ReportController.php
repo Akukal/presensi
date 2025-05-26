@@ -93,12 +93,12 @@ class ReportController extends Controller
             ->addColumn('kelas', fn($siswa) => $siswa->kelas->nama ?? '-')
             ->addColumn('gender', function ($siswa) {
                 return $siswa->gender == 1
-                    ? "<span class='badge badge-primary'>Pria</span>"
+                    ? "<span class='badge badge-success'>Pria</span>"
                     : "<span class='badge badge-danger'>Wanita</span>";
             })
             ->addColumn('nomor_orang_tua', fn($siswa) => $siswa->telepon_wali ?? '-')
             ->addColumn('aksi', function ($row) {
-                return '<a href="' . route('laporan.siswa.detailpersiswa', $row->id) . '" class="btn btn-info btn-sm text-white font-weight-bold">Detail Siswa</a>';
+                return '<a href="' . route('laporan.siswa.detailpersiswa', $row->id) . '" class="btn btn-primary btn-sm text-white font-weight-bold">Detail Siswa</a>';
             })
             ->rawColumns(['gender', 'aksi'])
             ->make(true);

@@ -54,7 +54,7 @@
                   <td>{{ $siswa->nis }}</td>
                   <td>{{ $siswa->nama }}</td>
                   <td>
-                    @if ($siswa->jenis_kelamin == 'L') <span class='badge badge-success'>Pria</span>
+                    @if ($siswa->gender == 1) <span class='badge badge-success'>Pria</span>
                     @else <span class='badge badge-danger'>Wanita</span>
                     @endif
                   </td>
