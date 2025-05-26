@@ -74,11 +74,11 @@
                   <th>NIS</th>
                   <th>Nama</th>
                   <th>Kelas</th>
+                  <th>Status</th>
                   <th>Tanggal</th>
                   <th>Absen Masuk</th>
                   <th>Absen Pulang</th>
-                  <th>Status</th>
-                  <th>Status Masuk</th>
+                  <th>Kehadiran</th>
                   <th>Keterangan</th>
                 </tr>
                 </thead>
@@ -141,10 +141,10 @@
         {data: 'siswa.nis', name: 'siswa.nis'},
         {data: 'siswa.nama', name: 'siswa.nama'},
         {data: 'kelas', name: 'kelas'},
+        {data: 'status', name: 'status'},
         {data: 'tanggal', name: 'tanggal'},
         {data: 'jam_masuk', name: 'jam_masuk'},
         {data: 'jam_pulang', name: 'jam_pulang'},
-        {data: 'status', name: 'status'},
         {data: 'status_masuk', name: 'status_masuk'},
         {data: 'keterangan', name: 'keterangan'},
       ]
