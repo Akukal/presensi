@@ -1,4 +1,4 @@
-@extends('website.layouts.app', ['title' => 'Presensi By Siswa'])
+@extends('website.layouts.app', ['title' => 'Laporan per Siswa'])
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -93,7 +93,7 @@
                   <th>Absen Masuk</th>
                   <th>Absen Pulang</th>
                   <th>Status</th>
-                  <th>Status Masuk</th>
+                  <th>Kehadiran</th>
                   <th>Keterangan</th>
                 </tr>
               </thead>
